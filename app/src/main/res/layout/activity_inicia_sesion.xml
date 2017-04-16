@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_inicia_sesion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.programacion.robertomtz.cdmx_go.Activities.IniciaSesionActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:text="@string/iniciar_sesion"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15sp"
+        android:text="@string/aceptar"
+        android:id="@+id/inicia_sesion_btn_aceptar"
+        android:layout_marginBottom="39dp"
+        android:layout_above="@+id/inicia_sesion_tv_olvide_pass"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/o"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/inicia_sesion_btn_fb"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/olvide_pass"
+        android:id="@+id/inicia_sesion_tv_olvide_pass"
+        android:layout_marginBottom="26dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <com.facebook.login.widget.LoginButton
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="@string/iniciar_sesion_con_fb"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/inicia_sesion_btn_fb"
+        android:layout_marginTop="42dp"
+        android:layout_alignLeft="@+id/inicia_sesion_btn_aceptar"
+        android:layout_alignStart="@+id/inicia_sesion_btn_aceptar" />
+
+    <EditText
+        android:id="@+id/inicia_sesion_et_password"
+        android:layout_width="320sp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/password"
+        android:maxLines="1"
+        android:layout_marginBottom="59dp"
+        android:layout_above="@+id/inicia_sesion_btn_aceptar"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/inicia_sesion_et_usuario"
+        android:layout_width="320sp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:hint="@string/nombre_usuario"
+        android:maxLines="1"
+        android:nextFocusDown="@+id/inicia_sesion_et_password"
+        android:layout_above="@+id/inicia_sesion_et_password"
+        android:layout_alignLeft="@+id/inicia_sesion_et_password"
+        android:layout_alignStart="@+id/inicia_sesion_et_password"
+        android:layout_marginBottom="13dp" />
+
+
+</RelativeLayout>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CDMX-GO</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="iniciar_sesion_con_fb">Iniciar Sesión con Facebook</string>
+    <string name="o">o</string>
+    <string name="facebook_app_id">207482909746983</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="olvide_pass">Olvidé mi contraseña</string>
+    <string name="nombre_usuario">Nombre de Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="correo">Correo Electrónico</string>
+    <string name="aceptar_notificaciones">¿Recibir información acerca de los nuevos eventos a través de tu correo?</string>
+    <string name="title_activity_principal">PrincipalActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>

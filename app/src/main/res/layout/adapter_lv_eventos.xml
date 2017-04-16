@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250sp"
+    android:background="#f47f7f">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NOMBRE DEL EVENTO"
+        android:id="@+id/eventos_tv_nombre_del_evento"
+        android:layout_marginTop="14dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="300sp"
+        android:layout_height="100sp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/eventos_iv_image"
+        android:layout_below="@+id/eventos_tv_nombre_del_evento"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:id="@+id/eventos_tv_descripcion"
+        android:layout_below="@+id/eventos_iv_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp" />
+
+</RelativeLayout>
