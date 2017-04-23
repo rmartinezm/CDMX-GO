@@ -1,5 +1,6 @@
 package com.programacion.robertomtz.cdmx_go.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 import com.programacion.robertomtz.cdmx_go.Adapters.HomeAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
@@ -25,19 +28,8 @@ import java.util.ArrayList;
 
 public class PrincipalActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
 
     @Override
@@ -47,11 +39,9 @@ public class PrincipalActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -81,6 +71,13 @@ public class PrincipalActivity extends AppCompatActivity {
 
         switch (id){
             case (R.id.action_settings):
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+
+                Intent intent = new Intent(getApplicationContext(), InicioActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

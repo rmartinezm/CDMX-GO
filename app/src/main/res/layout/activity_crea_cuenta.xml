@@ -32,35 +32,38 @@
         android:layout_alignParentEnd="true" />
 
     <EditText
+        android:id="@+id/crear_cuenta_et_repite_password"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:hint="@string/correo"
+        android:hint="@string/repite_password"
         android:maxLines="1"
-        android:id="@+id/crear_cuenta_et_correo"
+        android:inputType="textPassword"
         android:layout_marginBottom="11dp"
         android:layout_above="@+id/crear_cuenta_switch_informacion"
         android:layout_centerHorizontal="true" />
 
     <EditText
+        android:id="@+id/crear_cuenta_et_password"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:hint="@string/password"
+        android:inputType="textPassword"
         android:maxLines="1"
-        android:id="@+id/crear_cuenta_et_password"
-        android:layout_above="@+id/crear_cuenta_et_correo"
-        android:layout_alignLeft="@+id/crear_cuenta_et_correo"
-        android:layout_alignStart="@+id/crear_cuenta_et_correo"
+        android:layout_above="@+id/crear_cuenta_et_repite_password"
+        android:layout_alignLeft="@+id/crear_cuenta_et_repite_password"
+        android:layout_alignStart="@+id/crear_cuenta_et_repite_password"
         android:layout_marginBottom="14dp" />
 
     <EditText
+        android:id="@+id/crear_cuenta_et_usuario"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:hint="@string/nombre_usuario"
         android:maxLines="1"
-        android:id="@+id/crear_cuenta_et_usuario"
+        android:inputType="textEmailAddress"
         android:layout_marginBottom="18dp"
         android:layout_above="@+id/crear_cuenta_et_password"
         android:layout_alignLeft="@+id/crear_cuenta_et_password"
