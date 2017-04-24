@@ -21,7 +21,6 @@ import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.programacion.robertomtz.cdmx_go.Adapters.HomeAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
-import com.programacion.robertomtz.cdmx_go.MapsActivity;
 import com.programacion.robertomtz.cdmx_go.R;
 
 import java.util.ArrayList;

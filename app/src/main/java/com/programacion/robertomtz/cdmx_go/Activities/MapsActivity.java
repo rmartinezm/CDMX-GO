@@ -1,4 +1,4 @@
-package com.programacion.robertomtz.cdmx_go;
+package com.programacion.robertomtz.cdmx_go.Activities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.programacion.robertomtz.cdmx_go.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
