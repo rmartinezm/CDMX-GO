@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marcador = mMap.addMarker(new MarkerOptions()
                 .position(coordenadas)
                 .title(getResources().getString(R.string.mi_ubicacion))
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_market)));
         mMap.animateCamera(miUbicacion);
     }
 
@@ -78,19 +78,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
+        public void onStatusChanged(String s, int i, Bundle bundle) {}
 
         @Override
-        public void onProviderEnabled(String s) {
-
-        }
+        public void onProviderEnabled(String s) {}
 
         @Override
-        public void onProviderDisabled(String s) {
-
-        }
+        public void onProviderDisabled(String s) {}
     };
 
     private void miUbicacion() {
