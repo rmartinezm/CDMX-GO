@@ -7,7 +7,7 @@
     <string name="facebook_app_id">207482909746983</string>
     <string name="aceptar">Aceptar</string>
     <string name="olvide_pass">Olvidé mi contraseña</string>
-    <string name="nombre_usuario">Correo Electrónico</string>
+    <string name="nombre_usuario">Nombre de Usuario</string>
     <string name="password">Contraseña</string>
     <string name="correo">Correo Electrónico</string>
     <string name="aceptar_notificaciones">¿Deceas recibir notificaciones sobre nuevos eventos?</string>
@@ -18,12 +18,18 @@
     <string name="repite_password">Repite la Contraseña</string>
     <string name="cerrar_sesion">Cerrar Sesión</string>
     <string name="mi_ubicacion">Mi Ubicación</string>
-
+    <string name="nuevo_password">Nueva Contraseña</string>
+    <string name="actual_password">Contraseña Actual</string>
+    <string name="cambiar_password">Cambiar Contraseña</string>
     <string name="error_iniciar_sesion">Ocurrió un error al Iniciar la Sesión</string>
     <string name="error_crear_cuenta">Ocurrió un error al Crear la Cuenta</string>
     <string name="error_campos_vacios">Favor de introducir todos los datos</string>
     <string name="error_passwords_no_coinciden">Las Contraseñas ingresadas no coinciden</string>
     <string name="error_password_longitud">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="crear_user_name">Crear Nombre de Usuario</string>
+    <string name="crear">Crear</string>
+    <string name="error">Ocurrio un error</string>
+    <string name="usuario_ya_existe">El nombre de Usuario introducido ya existe, intente con uno distinto</string>
 
     <string name="exito_crear_cuenta">Cuenta creada Éxitosamente!</string>
     <string name="title_activity_maps">Map</string>

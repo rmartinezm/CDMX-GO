@@ -28,6 +28,8 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
     private Button btnAceptar;
     private ImageView ivImagen;
     private ProgressDialog progressDialog;
+    //Auxiliares
+    private Intent intent;
     // Firebase
     private FirebaseAuth auth;
 
@@ -53,7 +55,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
         auth = FirebaseAuth.getInstance();
     }
 
-    private void crearCuenta(String user, String password){
+    private void crearCuenta(String user, final String password){
         auth.createUserWithEmailAndPassword(user, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -61,7 +63,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
                         progressDialog.dismiss();
                         if (task.isSuccessful()){
                             Toast.makeText(CreaCuentaActivity.this, getResources().getString(R.string.exito_crear_cuenta), Toast.LENGTH_SHORT).show();
-                            irPincipalActivity();
+                            irPincipalActivity(password, "crear cuenta", "recibir notificaciones");
                         }else
                             Toast.makeText(CreaCuentaActivity.this, getResources().getString(R.string.error_crear_cuenta), Toast.LENGTH_SHORT).show();
                     }
@@ -69,8 +71,13 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
     }
 
     /** Quitamos la opcion de ir al anterior activity con el boton back **/
-    private void irPincipalActivity() {
-        Intent intent = new Intent(this, PrincipalActivity.class);
+    private void irPincipalActivity(String ... cadenas) {
+        intent = new Intent(this, PrincipalActivity.class);
+        if (cadenas.length != 0) {
+            intent.putExtra("password", cadenas[0]);
+            intent.putExtra("crear cuenta", true);
+            intent.putExtra("recibir notificaciones", aSwitch.isActivated());
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
