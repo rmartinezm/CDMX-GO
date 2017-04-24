@@ -17,6 +17,7 @@
     <string name="creando_cuenta">Creando cuenta...</string>
     <string name="repite_password">Repite la Contraseña</string>
     <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="mi_ubicacion">Mi Ubicación</string>
 
     <string name="error_iniciar_sesion">Ocurrió un error al Iniciar la Sesión</string>
     <string name="error_crear_cuenta">Ocurrió un error al Crear la Cuenta</string>
@@ -25,4 +26,5 @@
     <string name="error_password_longitud">La contraseña debe tener al menos 6 caracteres</string>
 
     <string name="exito_crear_cuenta">Cuenta creada Éxitosamente!</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

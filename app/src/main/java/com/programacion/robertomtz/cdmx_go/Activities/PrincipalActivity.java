@@ -3,7 +3,6 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,15 +21,18 @@ import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.programacion.robertomtz.cdmx_go.Adapters.HomeAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
+import com.programacion.robertomtz.cdmx_go.MapsActivity;
 import com.programacion.robertomtz.cdmx_go.R;
 
 import java.util.ArrayList;
 
-public class PrincipalActivity extends AppCompatActivity {
+public class PrincipalActivity extends AppCompatActivity implements View.OnClickListener{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+    private FloatingActionButton fab;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +50,22 @@ public class PrincipalActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view){
+        int id = view.getId();
+
+        switch (id){
+            case R.id.fab:
+                intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                return;
+        }
 
     }
 
@@ -74,7 +84,7 @@ public class PrincipalActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
 
-                Intent intent = new Intent(getApplicationContext(), InicioActivity.class);
+                intent = new Intent(getApplicationContext(), InicioActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
