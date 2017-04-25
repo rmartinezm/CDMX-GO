@@ -187,7 +187,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
             final Button cambiarPassword = (Button) rootView.findViewById(R.id.fragment_user_btn_cambiar_password);
 
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            userReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     usuarioUserName = dataSnapshot.child("userName").getValue().toString();
