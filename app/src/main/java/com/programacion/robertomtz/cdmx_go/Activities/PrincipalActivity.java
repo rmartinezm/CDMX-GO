@@ -19,12 +19,10 @@ import android.widget.ListView;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.programacion.robertomtz.cdmx_go.Adapters.HomeAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
-import com.programacion.robertomtz.cdmx_go.Classes.Usuario;
 import com.programacion.robertomtz.cdmx_go.R;
 
 import java.util.ArrayList;
@@ -61,9 +59,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         setSupportActionBar(toolbar);
 
         inicializaVariables();
-
-        if (crearCuenta)
-            creaUsuario();
     }
 
     private void inicializaVariables() {
@@ -71,13 +66,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            crearCuenta = (boolean) bundle.get("crear cuenta");
-            recibirNotificaciones = (boolean) bundle.get("recibir notificaciones");
-            usuarioPassword = (String) bundle.get("password");
-        }
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -89,51 +77,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
-
-
     }
 
-    private void creaUsuario(){
-        FirebaseUser user = auth.getCurrentUser();
-        usuarioEmail = (user.getEmail() != null)? user.getEmail(): "";
-        // Foto temporal
-        usuarioFoto = "https://avatars3.githubusercontent.com/u/1452563?v=3&s=400";
-        // Password esta guardado en la clase
-        // Coins los inicializaremos en 0
-
-        usuarioUserName = (user.getDisplayName() != null)? user.getDisplayName() : "";
-
-        if (yaExisteUserName(usuarioUserName)){
-            intent = new Intent(this, UserNameActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return;
-        }
-
-        Usuario usuario = new Usuario(usuarioUserName, usuarioPassword, usuarioEmail, usuarioFoto, 0);
-
-        reference.child(USUARIOS).child(usuarioUserName).setValue(usuario);
-
-    }
-
-    private boolean yaExisteUserName(String userName){
-        return false;
-    }
-
-    @Override
-    public void onClick(View view){
-        int id = view.getId();
-
-        switch (id){
-            case R.id.fab:
-                intent = new Intent(this, MapsActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                return;
-        }
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,6 +105,22 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        final Intent intent;
+
+        switch (id){
+            case R.id.fab:
+                intent = new Intent(PrincipalActivity.this, MapsActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                return;
+        }
+
+    }
+
     /** FRAGMENT DE LA PRIMERA PAGINA **/
     public static class HomeFragment extends Fragment {
 
@@ -180,6 +141,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    /** FRAGMENT DE LA SEGUNDA PAGINA **/
     public static class UserFragment extends Fragment {
 
         public UserFragment(){}
@@ -188,6 +150,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState){
             View rootView = inflater.inflate(R.layout.fragment_user, container, false);
+
+
 
             return rootView;
         }

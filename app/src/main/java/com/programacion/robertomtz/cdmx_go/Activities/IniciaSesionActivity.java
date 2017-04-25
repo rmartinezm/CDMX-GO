@@ -24,6 +24,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.programacion.robertomtz.cdmx_go.Classes.Usuario;
 import com.programacion.robertomtz.cdmx_go.R;
 
 public class IniciaSesionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,8 +46,9 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
     // Firebase
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener listener;
+    private FirebaseDatabase database;
     // Auxiliares
-    private boolean flag;
+    private final String USUARIOS = "usuarios";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +152,7 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
             }
         };
 
+        database = FirebaseDatabase.getInstance();
     }
 
     /** Una vez que ingresamos a fecebook tenemos que ingresar a Firebase **/
@@ -152,13 +160,38 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
 
         auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (!task.isSuccessful())
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_iniciar_sesion), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful())
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_iniciar_sesion), Toast.LENGTH_SHORT).show();
+                        else {
+                            // Tenemos que ver si la cuenta de fb ya habia sido abierta
+                            final FirebaseUser firebaseUser = auth.getCurrentUser();
+                            final DatabaseReference usersReference = database.getReference().child(USUARIOS);
 
+                            usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.hasChild(firebaseUser.getUid())) {
+                                        //Primera vez en abrir la aplicacion con facebook, creamos su usuario en la base de datos
+
+                                        DatabaseReference currentUserDB = usersReference.child(auth.getCurrentUser().getUid());
+
+                                        Usuario usuario = new Usuario(firebaseUser.getDisplayName(), "", "", firebaseUser.getPhotoUrl().toString(), 0);
+                                        usuario.setNotificaciones(true);
+
+                                        currentUserDB.setValue(usuario);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+
+                    }
+                });
     }
 
     /** Quitamos la opcion de ir al anterior activity con el boton back **/

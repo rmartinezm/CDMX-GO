@@ -12,6 +12,7 @@ public class Usuario implements Serializable {
     private String password;
     private String email;
     private String photo;
+    private boolean notificaciones;
     private int coins;
 
     public Usuario() {}
@@ -74,5 +75,13 @@ public class Usuario implements Serializable {
 
     public void setCoins(int coins) {
         this.coins = coins;
+    }
+
+    public boolean getNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(boolean notificaciones) {
+        this.notificaciones = notificaciones;
     }
 }

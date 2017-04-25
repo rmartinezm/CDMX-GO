@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.programacion.robertomtz.cdmx_go.R;
 
 public class CreaCuentaActivity extends AppCompatActivity implements View.OnClickListener{
@@ -30,8 +32,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
     private ProgressDialog progressDialog;
     //Auxiliares
     private Intent intent;
-    // Firebase
-    private FirebaseAuth auth;
+    private final String USUARIOS = "usuarios";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,35 +52,41 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
         btnAceptar = (Button) findViewById(R.id.crear_cuenta_btn_crear_cuenta);
         btnAceptar.setOnClickListener(this);
         ivImagen = (ImageView) findViewById(R.id.crear_cuenta_iv_image);
-
-        auth = FirebaseAuth.getInstance();
     }
 
-    private void crearCuenta(String user, final String password){
+    private void crearCuenta(final String user, final String password){
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+
         auth.createUserWithEmailAndPassword(user, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()){
-                            Toast.makeText(CreaCuentaActivity.this, getResources().getString(R.string.exito_crear_cuenta), Toast.LENGTH_SHORT).show();
-                            irPincipalActivity(password, "crear cuenta", "recibir notificaciones");
+                            // Nos logeamos con el nuevo usuario creado
+                            auth.signInWithEmailAndPassword(user, password);
+
+                            // Agregamos a la base de datos al usuario
+                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(USUARIOS);
+
+                            // Foto temporal
+                            String usuarioFoto = "https://avatars3.githubusercontent.com/u/1452563?v=3&s=400";
+
+                            DatabaseReference currentUserDB = mDatabase.child(auth.getCurrentUser().getUid());
+                            currentUserDB.child("userName").setValue("");
+                            currentUserDB.child("email").setValue(user);
+                            currentUserDB.child("password").setValue(password);
+                            currentUserDB.child("photo").setValue(usuarioFoto);
+                            currentUserDB.child("coins").setValue(0);
+                            currentUserDB.child("notificaciones").setValue(aSwitch.isChecked());
+
+                            Intent intent1 = new Intent(CreaCuentaActivity.this, UserNameActivity.class);
+                            intent1.putExtra("id", auth.getCurrentUser().getUid());
+                            startActivity(intent1);
                         }else
                             Toast.makeText(CreaCuentaActivity.this, getResources().getString(R.string.error_crear_cuenta), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /** Quitamos la opcion de ir al anterior activity con el boton back **/
-    private void irPincipalActivity(String ... cadenas) {
-        intent = new Intent(this, PrincipalActivity.class);
-        if (cadenas.length != 0) {
-            intent.putExtra("password", cadenas[0]);
-            intent.putExtra("crear cuenta", true);
-            intent.putExtra("recibir notificaciones", aSwitch.isActivated());
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 
     @Override

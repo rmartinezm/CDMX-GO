@@ -17,11 +17,11 @@ public class UserNameActivity extends AppCompatActivity implements View.OnClickL
     private EditText etUserName;
     private Button btnCrear;
 
-    public static String nombreDeUsuarioValido;
-
     private FirebaseDatabase database;
-    private DatabaseReference reference;
+    private DatabaseReference usersReference;
     private String userName;
+    private String id;
+    private Intent intent;
     private final String USUARIOS = "usuarios";
 
     @Override
@@ -32,8 +32,13 @@ public class UserNameActivity extends AppCompatActivity implements View.OnClickL
         etUserName = (EditText) findViewById(R.id.user_name_et_user_name);
         btnCrear = (Button) findViewById(R.id.user_name_btn_crear);
 
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null)
+            id = (String) bundle.get("id");
+
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference();
+        usersReference = database.getReference().child(USUARIOS);
 
         btnCrear.setOnClickListener(this);
     }
@@ -47,10 +52,23 @@ public class UserNameActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        UserNameActivity.nombreDeUsuarioValido = userName;
-        Intent intent = new Intent(this, PrincipalActivity.class);
+        DatabaseReference usuario = usersReference.child(id);
+        usuario.child("userName").setValue(userName);
+
+        Toast.makeText(this, getResources().getString(R.string.exito_crear_cuenta), Toast.LENGTH_SHORT).show();
+
+        irPincipalActivity();
+
+    }
+
+    private void irPincipalActivity() {
+        intent = new Intent(this, PrincipalActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onResume();
     }
 }
