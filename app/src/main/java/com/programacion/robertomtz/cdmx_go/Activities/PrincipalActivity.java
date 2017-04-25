@@ -170,6 +170,10 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         private String usuarioPassword;
 
         public UserFragment() {
+            usuarioUserName = "";
+            usuarioEmail = "";
+            usuarioFoto = "";
+            usuarioPassword = "";
             this.context = PrincipalActivity.getContext();
             auth = FirebaseAuth.getInstance();
             database = FirebaseDatabase.getInstance();
@@ -190,10 +194,17 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             userReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    usuarioUserName = dataSnapshot.child("userName").getValue().toString();
-                    usuarioEmail = dataSnapshot.child("email").getValue().toString();
-                    usuarioFoto = dataSnapshot.child("photo").getValue().toString();
-                    usuarioPassword = dataSnapshot.child("password").getValue().toString();
+                    if (dataSnapshot.hasChild("userName"))
+                        usuarioUserName = dataSnapshot.child("userName").getValue().toString();
+                    if (dataSnapshot.hasChild("email"))
+                        usuarioEmail = dataSnapshot.child("email").getValue().toString();
+                    if (dataSnapshot.hasChild("photo"))
+                        usuarioFoto = dataSnapshot.child("photo").getValue().toString();
+                    if (dataSnapshot.hasChild("password"))
+                        usuarioPassword = dataSnapshot.child("password").getValue().toString();
+
+                    if (usuarioUserName.isEmpty())
+                        return;
 
                     tvCorreo.setText(usuarioEmail);
                     tvUserName.setText(usuarioUserName);

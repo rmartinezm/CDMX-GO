@@ -164,18 +164,15 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful())
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_iniciar_sesion), Toast.LENGTH_SHORT).show();
-                        else {
+                        else { // isSuccessful()
                             // Tenemos que ver si la cuenta de fb ya habia sido abierta
-                            final FirebaseUser firebaseUser = auth.getCurrentUser();
-                            final DatabaseReference usersReference = database.getReference().child(USUARIOS);
-
-                            usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child(USUARIOS).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (!dataSnapshot.hasChild(firebaseUser.getUid())) {
+                                    if (!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                         //Primera vez en abrir la aplicacion con facebook, creamos su usuario en la base de datos
-
-                                        DatabaseReference currentUserDB = usersReference.child(auth.getCurrentUser().getUid());
+                                        FirebaseUser firebaseUser = auth.getCurrentUser();
+                                        DatabaseReference currentUserDB = FirebaseDatabase.getInstance().getReference().child(USUARIOS).child(firebaseUser.getUid());
 
                                         Usuario usuario = new Usuario(firebaseUser.getDisplayName(), "", "", firebaseUser.getPhotoUrl().toString(), 0);
                                         usuario.setNotificaciones(true);
