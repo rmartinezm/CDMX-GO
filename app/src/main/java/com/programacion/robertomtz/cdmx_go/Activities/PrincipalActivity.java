@@ -30,11 +30,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.programacion.robertomtz.cdmx_go.Adapters.HomeAdapter;
+import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class PrincipalActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -48,6 +48,9 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private boolean crearCuenta;
     private boolean recibirNotificaciones;
     private final String USUARIOS = "usuarios";
+    private static boolean flag;
+    private static LinkedList<Negocio> negocios;
+    private int i;
 
     private String usuarioID;
     private static Context context;
@@ -82,11 +85,48 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
+
+        llenaListaNegocios();
+
+    }
+
+    private void llenaListaNegocios(){
+        DatabaseReference reference = database.getReference().child("eventos");
+        i = 0;
+        negocios = new LinkedList<>();
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                flag = true;
+                while (flag) {
+                    if (dataSnapshot.hasChild(i + "")) {
+                        Negocio negocio = new Negocio();
+                        negocio.setNombre(dataSnapshot.child(i + "").child("nombre_evento").getValue().toString());
+                        negocio.setUrlImagen(dataSnapshot.child(i + "").child("urlImagen").getValue().toString());
+                        negocio.setFecha(dataSnapshot.child(i + "").child("fecha").getValue().toString());
+                        negocio.setHorario(dataSnapshot.child(i + "").child("horario").getValue().toString());
+                        negocio.setLugar(dataSnapshot.child(i + "").child("lugar").getValue().toString());
+                        negocio.setDescripcion(dataSnapshot.child(i+"").child("descripcion").getValue().toString());
+
+                        negocios.add(negocio);
+
+                        i++;
+
+                    } else
+                        flag = false;
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
     }
 
     public static Context getContext(){
@@ -135,19 +175,27 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    /** FRAGMENT DE LA PRIMERA PAGINA **/
-    public static class HomeFragment extends Fragment {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (negocios == null)
+            llenaListaNegocios();
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+    }
 
-        public HomeFragment(){}
+    /** FRAGMENT DE LA PRIMERA PAGINA **/
+    public static class EventosFragment extends Fragment {
+
+        public EventosFragment(){}
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState){
-            View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_eventos, container, false);
 
-            ListView listView = (ListView) rootView.findViewById(R.id.home_listview);
+            ListView listView = (ListView) rootView.findViewById(R.id.fragment_eventos_lista);
 
-            HomeAdapter adapter = new HomeAdapter(rootView.getContext(), new ArrayList<Negocio>());
+            EventoAdapter adapter = new EventoAdapter(rootView.getContext(), negocios);
             listView.setAdapter(adapter);
 
             return rootView;
@@ -191,7 +239,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
             final Button cambiarPassword = (Button) rootView.findViewById(R.id.fragment_user_btn_cambiar_password);
 
-            userReference.addValueEventListener(new ValueEventListener() {
+            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild("userName"))
@@ -243,13 +291,13 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    return new HomeFragment();
+                    return new EventosFragment();
                 case 1:
                     return new UserFragment();
                 case 2:
-                    return new HomeFragment();
+                    return new UserFragment();
                 default:
-                    return new HomeFragment();
+                    return new UserFragment();
             }
         }
 
