@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -94,41 +95,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        llenaListaNegocios();
-
-    }
-
-    private static void llenaListaNegocios(){
-        DatabaseReference reference = database.getReference().child("eventos");
-        i = 0;
-        negocios = new LinkedList<>();
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                flag = true;
-                while (flag) {
-                    if (dataSnapshot.hasChild(i + "")) {
-                        Negocio negocio = new Negocio();
-                        negocio.setNombre(dataSnapshot.child(i + "").child("nombre_evento").getValue().toString());
-                        negocio.setUrlImagen(dataSnapshot.child(i + "").child("urlImagen").getValue().toString());
-                        negocio.setFecha(dataSnapshot.child(i + "").child("fecha").getValue().toString());
-                        negocio.setHorario(dataSnapshot.child(i + "").child("horario").getValue().toString());
-                        negocio.setLugar(dataSnapshot.child(i + "").child("lugar").getValue().toString());
-                        negocio.setDescripcion(dataSnapshot.child(i+"").child("descripcion").getValue().toString());
-
-                        negocios.add(negocio);
-
-
-                        i++;
-
-                    } else
-                        flag = false;
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
     }
 
     public static Context getContext(){
@@ -192,23 +158,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             return rootView;
         }
 
-        private static class AsyncTaskAuxiliar extends AsyncTask<Void, Integer, Boolean>{
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-
-                llenaListaNegocios();
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                EventoAdapter adapter = new EventoAdapter(context, negocios);
-                listView.setAdapter(adapter);
-            }
-        }
-
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -227,6 +176,52 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 }
             });
 
+        }
+
+        private static class AsyncTaskAuxiliar extends AsyncTask<Void, Integer, Boolean>{
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                DatabaseReference reference = database.getReference().child("eventos");
+                i = 0;
+                negocios = new LinkedList<>();
+
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        flag = true;
+                        while (flag) {
+                            if (dataSnapshot.hasChild(i + "")) {
+                                Negocio negocio = new Negocio();
+                                negocio.setNombre(dataSnapshot.child(i + "").child("nombre_evento").getValue().toString());
+                                negocio.setUrlImagen(dataSnapshot.child(i + "").child("urlImagen").getValue().toString());
+                                negocio.setFecha(dataSnapshot.child(i + "").child("fecha").getValue().toString());
+                                negocio.setHorario(dataSnapshot.child(i + "").child("horario").getValue().toString());
+                                negocio.setLugar(dataSnapshot.child(i + "").child("lugar").getValue().toString());
+                                negocio.setDescripcion(dataSnapshot.child(i+"").child("descripcion").getValue().toString());
+
+                                negocios.add(negocio);
+
+                                ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                i++;
+
+                            } else
+                                flag = false;
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                EventoAdapter adapter = new EventoAdapter(context, negocios);
+                listView.setAdapter(adapter);
+            }
         }
     }
 
