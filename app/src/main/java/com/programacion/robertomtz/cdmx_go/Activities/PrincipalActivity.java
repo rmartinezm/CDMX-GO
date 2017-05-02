@@ -2,7 +2,9 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,13 +53,13 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private final String USUARIOS = "usuarios";
     private static boolean flag;
     private static LinkedList<Negocio> negocios;
-    private int i;
+    private static int i;
 
     private String usuarioID;
     private static Context context;
 
     // Firebase
-    private FirebaseDatabase database;
+    private static FirebaseDatabase database;
     private DatabaseReference userReference;
     private FirebaseAuth auth;
 
@@ -85,7 +88,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -96,7 +98,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void llenaListaNegocios(){
+    private static void llenaListaNegocios(){
         DatabaseReference reference = database.getReference().child("eventos");
         i = 0;
         negocios = new LinkedList<>();
@@ -117,6 +119,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                         negocios.add(negocio);
 
+
                         i++;
 
                     } else
@@ -126,7 +129,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
 
     public static Context getContext(){
@@ -175,16 +177,10 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (negocios == null)
-            llenaListaNegocios();
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-    }
-
     /** FRAGMENT DE LA PRIMERA PAGINA **/
     public static class EventosFragment extends Fragment {
+
+        static ListView listView;
 
         public EventosFragment(){}
 
@@ -193,14 +189,45 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                  Bundle savedInstanceState){
             View rootView = inflater.inflate(R.layout.fragment_eventos, container, false);
 
-            ListView listView = (ListView) rootView.findViewById(R.id.fragment_eventos_lista);
-
-            EventoAdapter adapter = new EventoAdapter(rootView.getContext(), negocios);
-            listView.setAdapter(adapter);
-
             return rootView;
         }
 
+        private static class AsyncTaskAuxiliar extends AsyncTask<Void, Integer, Boolean>{
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+
+                llenaListaNegocios();
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                EventoAdapter adapter = new EventoAdapter(context, negocios);
+                listView.setAdapter(adapter);
+            }
+        }
+
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            listView = (ListView) getActivity().findViewById(R.id.fragment_eventos_lista);
+
+            AsyncTaskAuxiliar ata = new AsyncTaskAuxiliar();
+            ata.execute();
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                    Intent intent = new Intent(context, CardViewActivity.class);
+                    intent.putExtra("negocio", negocios.get(position));
+                    startActivity(intent);
+                }
+            });
+
+        }
     }
 
     /** FRAGMENT DE LA SEGUNDA PAGINA **/

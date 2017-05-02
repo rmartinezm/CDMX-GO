@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -40,15 +41,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            return;
+        mMap = googleMap;
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+
+            Negocio negocio = (Negocio) bundle.get("negocio");
+            latitud = Double.parseDouble(negocio.getLugar().trim().split(",")[0].trim());
+            longitud = Double.parseDouble(negocio.getLugar().trim().split(",")[1].trim());
+            LatLng latlng = new LatLng(latitud, longitud);
+            CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(latlng, 16);
+            if (marcador != null)
+                marcador.remove();
+            marcador = mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .title(negocio.getNombre())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_market)));
+            mMap.animateCamera(miUbicacion);
+
+        }else {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            miUbicacion();
         }
-        mMap.setMyLocationEnabled(true);
-        miUbicacion();
     }
 
     private void agregaMarcador(double lat, double lon) {

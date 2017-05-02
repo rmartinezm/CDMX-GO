@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.programacion.robertomtz.cdmx_go.R;
@@ -56,6 +57,11 @@ public class InicioActivity extends AppCompatActivity {
         iniciarSesion = (Button) findViewById(R.id.inicio_btn_inicia_sesion);
         crearCuenta = (Button) findViewById(R.id.inicio_btn_crear_cuenta);
         logo = (ImageView) findViewById(R.id.inicio_iv_logo);
+
+        Glide.with(this)
+                .load(R.drawable.logo)
+                .crossFade()
+                .into(logo);
 
         auth = FirebaseAuth.getInstance();
 

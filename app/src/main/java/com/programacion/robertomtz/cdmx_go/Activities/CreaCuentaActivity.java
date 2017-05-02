@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -52,6 +53,10 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
         btnAceptar = (Button) findViewById(R.id.crear_cuenta_btn_crear_cuenta);
         btnAceptar.setOnClickListener(this);
         ivImagen = (ImageView) findViewById(R.id.crear_cuenta_iv_image);
+
+        Glide.with(this)
+                .load(R.drawable.logo)
+                .into(ivImagen);
     }
 
     private void crearCuenta(final String user, final String password){

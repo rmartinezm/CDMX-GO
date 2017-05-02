@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.programacion.robertomtz.cdmx_go.Activities.CardViewActivity"
+    tools:showIn="@layout/activity_card_view">
+
+    <TextView
+        android:id="@+id/cardview_descripcion"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/cardview_imagen"
+        android:gravity="center"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/cardview_imagen"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/cardview_nombre"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/cardview_como_llegar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/cardview_descripcion"
+        android:layout_alignRight="@+id/cardview_descripcion"
+        android:layout_alignEnd="@+id/cardview_descripcion"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/txt_1"
+        android:layout_width="100dp"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        android:text="@string/donde_es"
+        android:textSize="14sp"
+        android:layout_alignTop="@+id/cardview_como_llegar"
+        android:layout_toLeftOf="@+id/cardview_como_llegar"
+        android:layout_toStartOf="@+id/cardview_como_llegar"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp" />
+
+    <ImageView
+        android:id="@+id/cardview_marked"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/cardview_descripcion"
+        android:layout_alignEnd="@+id/cardview_descripcion"
+        android:layout_marginTop="13dp" />
+
+    <TextView
+        android:id="@+id/cardview_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/aceptar"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_alignTop="@+id/cardview_marked"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp" />
+
+</RelativeLayout>

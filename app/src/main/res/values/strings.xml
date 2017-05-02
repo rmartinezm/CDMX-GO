@@ -30,7 +30,10 @@
     <string name="crear">Crear</string>
     <string name="error">Ocurrio un error</string>
     <string name="usuario_ya_existe">El nombre de Usuario introducido ya existe, intente con uno distinto</string>
+    <string name="como_llegar">Cómo llegar</string>
+    <string name="donde_es">¿Dónde es?</string>
 
     <string name="exito_crear_cuenta">Cuenta creada Éxitosamente!</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_card_view">CardViewActivity</string>
 </resources>
