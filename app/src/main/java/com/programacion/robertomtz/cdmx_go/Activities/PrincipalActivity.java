@@ -1,9 +1,13 @@
 package com.programacion.robertomtz.cdmx_go.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,12 +33,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
@@ -233,11 +245,14 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         FirebaseDatabase database;
         DatabaseReference usersReference;
         DatabaseReference userReference;
+        StorageReference storage;
         Context context;
         private String usuarioUserName;
         private String usuarioEmail;
         private String usuarioFoto;
         private String usuarioPassword;
+
+        private final int CAMERA_REQUEST_CODE = 0;
 
         public UserFragment() {
             usuarioUserName = "";
@@ -252,7 +267,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_user, container, false);
 
@@ -261,9 +276,9 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
             final Button cambiarPassword = (Button) rootView.findViewById(R.id.fragment_user_btn_cambiar_password);
 
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            userReference.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(final DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild("userName"))
                         usuarioUserName = dataSnapshot.child("userName").getValue().toString();
                     if (dataSnapshot.hasChild("email"))
@@ -287,7 +302,29 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     cambiarPassword.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(context, "No implementado aun", Toast.LENGTH_SHORT).show();
+                            EditText passwordActual = (EditText) getActivity().findViewById(R.id.fragment_user_et_password_actual);
+                            EditText passwordNuevo = (EditText) getActivity().findViewById(R.id.fragment_user_et_nuevo_password);
+                            String passActual = passwordActual.getText().toString();
+                            String passNuevo = passwordNuevo.getText().toString();
+                            if (passActual.isEmpty() || passNuevo.isEmpty()) {
+                                Toast.makeText(context, getResources().getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (passActual.length() < 6 || passNuevo.length() < 6){
+                                Toast.makeText(context, getResources().getString(R.string.error_password_longitud), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (!passActual.equals(dataSnapshot.child("password").getValue())){
+                                Toast.makeText(context, getResources().getString(R.string.error_password_actual_no_coinciden), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            DatabaseReference currentUserDB = usersReference.child(auth.getCurrentUser().getUid());
+                            currentUserDB.child("password").setValue(passNuevo);
+                            Toast.makeText(context, getResources().getString(R.string.exito_cambiar_password), Toast.LENGTH_SHORT).show();
+
+                            passwordActual.setText("");
+                            passwordNuevo.setText("");
+                            passwordNuevo.requestFocus();
                         }
                     });
                 }

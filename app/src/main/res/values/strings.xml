@@ -26,6 +26,8 @@
     <string name="error_campos_vacios">Favor de introducir todos los datos</string>
     <string name="error_passwords_no_coinciden">Las Contraseñas ingresadas no coinciden</string>
     <string name="error_password_longitud">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_password_actual_no_coinciden">La contraseña actual no coincide</string>
+    <string name="exito_cambiar_password">Contraseña cambiada con éxito</string>
     <string name="crear_user_name">Crear Nombre de Usuario</string>
     <string name="crear">Crear</string>
     <string name="error">Ocurrio un error</string>
