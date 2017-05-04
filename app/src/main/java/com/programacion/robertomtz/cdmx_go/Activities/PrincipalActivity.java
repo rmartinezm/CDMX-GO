@@ -1,13 +1,9 @@
 package com.programacion.robertomtz.cdmx_go.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -33,23 +29,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class PrincipalActivity extends AppCompatActivity implements View.OnClickListener{
@@ -184,6 +175,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     Intent intent = new Intent(context, CardViewActivity.class);
                     intent.putExtra("negocio", negocios.get(position));
+                    String posicion = position+"";
+                    intent.putExtra("identificadorEvento", posicion);
                     startActivity(intent);
                 }
             });
@@ -204,13 +197,27 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flag = true;
                         while (flag) {
                             if (dataSnapshot.hasChild(i + "")) {
+
+                                DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
                                 Negocio negocio = new Negocio();
-                                negocio.setNombre(dataSnapshot.child(i + "").child("nombre_evento").getValue().toString());
-                                negocio.setUrlImagen(dataSnapshot.child(i + "").child("urlImagen").getValue().toString());
-                                negocio.setFecha(dataSnapshot.child(i + "").child("fecha").getValue().toString());
-                                negocio.setHorario(dataSnapshot.child(i + "").child("horario").getValue().toString());
-                                negocio.setLugar(dataSnapshot.child(i + "").child("lugar").getValue().toString());
-                                negocio.setDescripcion(dataSnapshot.child(i+"").child("descripcion").getValue().toString());
+                                negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                if (miNegocio.hasChild("calificaciones")){
+                                    DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                    HashMap<String, Integer> hashMap = new HashMap<>();
+
+                                    for (DataSnapshot calificacion: calificaciones.getChildren())
+                                        hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                    negocio.setCalificaciones(hashMap);
+                                }else
+                                    negocio.setCalificaciones(new HashMap<String, Integer>());
 
                                 negocios.add(negocio);
 
