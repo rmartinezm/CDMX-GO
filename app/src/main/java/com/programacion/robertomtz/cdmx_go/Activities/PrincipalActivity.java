@@ -1,5 +1,6 @@
 package com.programacion.robertomtz.cdmx_go.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -54,14 +55,16 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private Intent intent;
     private boolean crearCuenta;
     private boolean recibirNotificaciones;
+    public static ListView listView;
     private final String USUARIOS = "usuarios";
     private static boolean flag;
-    private static LinkedList<Negocio> negocios;
+    public static LinkedList<Negocio> negocios;
     private static int i;
+    public static EventoAdapter adapter;
 
     private String usuarioID;
-    private static Context context;
-
+    public static Context context;
+    public static Activity miActivity;
     // Firebase
     private static FirebaseDatabase database;
     private DatabaseReference userReference;
@@ -78,8 +81,14 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         inicializaVariables();
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     private void inicializaVariables() {
         context = this;
+        miActivity = this;
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -103,7 +112,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     public static Context getContext(){
         return context;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -148,8 +156,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     /** FRAGMENT DE LA PRIMERA PAGINA **/
     public static class EventosFragment extends Fragment {
-
-        static ListView listView;
 
         public EventosFragment(){}
 
@@ -238,7 +244,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-                EventoAdapter adapter = new EventoAdapter(context, negocios);
+                adapter = new EventoAdapter(context, negocios);
                 listView.setAdapter(adapter);
             }
         }

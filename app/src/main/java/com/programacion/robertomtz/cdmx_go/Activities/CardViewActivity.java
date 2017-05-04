@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -164,6 +165,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
         }
 
         calificacionesEvento = FirebaseDatabase.getInstance().getReference().child("eventos").child(identificadorEvento).child("calificaciones");
+        Negocio negocioAEditar = PrincipalActivity.negocios.get(Integer.parseInt(identificadorEvento));
+
+        Negocio negocio = negocioAEditar.copia();
+        HashMap<String, Integer> hashMap = new HashMap<>();
 
         switch (view.getId()){
 
@@ -175,6 +180,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 Glide.with(this).load(R.drawable.estrella_borde).into(estrella_5);
                 calificacionesEvento.child(user.getUid()).setValue(1);
                 textoCalificacion.setText("Mi Calificación");
+                hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 1);
+                negocio.setCalificaciones(hashMap);
+                PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
+                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
                 break;
             case R.id.estrella_dos:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -184,7 +193,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 Glide.with(this).load(R.drawable.estrella_borde).into(estrella_5);
                 calificacionesEvento.child(user.getUid()).setValue(2);
                 textoCalificacion.setText("Mi Calificación");
-
+                hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 2);
+                negocio.setCalificaciones(hashMap);
+                PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
+                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
                 break;
             case R.id.estrella_tres:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -194,6 +206,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 Glide.with(this).load(R.drawable.estrella_borde).into(estrella_5);
                 calificacionesEvento.child(user.getUid()).setValue(3);
                 textoCalificacion.setText("Mi Calificación");
+                hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 3);
+                negocio.setCalificaciones(hashMap);
+                PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
+                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
                 break;
             case R.id.estrella_cuatro:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -203,6 +219,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 Glide.with(this).load(R.drawable.estrella_borde).into(estrella_5);
                 calificacionesEvento.child(user.getUid()).setValue(4);
                 textoCalificacion.setText("Mi Calificación");
+                hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 4);
+                negocio.setCalificaciones(hashMap);
+                PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
+                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
                 break;
             case R.id.estrella_cinco:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -212,6 +232,10 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_5);
                 calificacionesEvento.child(user.getUid()).setValue(5);
                 textoCalificacion.setText("Mi Calificación");
+                hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 5);
+                negocio.setCalificaciones(hashMap);
+                PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
+                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
                 break;
             default:
                 return;

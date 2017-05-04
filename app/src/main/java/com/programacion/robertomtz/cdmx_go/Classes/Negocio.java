@@ -29,6 +29,10 @@ public class Negocio implements Serializable {
         this.calificaciones = calificaciones;
     }
 
+    public Negocio copia(){
+        return new Negocio(nombre, fecha, horario, lugar, urlImagen,descripcion, calificaciones);
+    }
+
     public String getNombre() {
         return nombre;
     }
