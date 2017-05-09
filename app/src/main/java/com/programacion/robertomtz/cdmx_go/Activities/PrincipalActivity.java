@@ -49,7 +49,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     // Views
-    private ViewPager mViewPager;
+    public static ViewPager mViewPager;
     private FloatingActionButton fab;
     // Auxiliares
     private Intent intent;
@@ -367,7 +367,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 case 1:
                     return new UserFragment();
                 case 2:
-                    return new UserFragment();
+                    return new FragmentRecompensas();
                 default:
                     return new UserFragment();
             }
