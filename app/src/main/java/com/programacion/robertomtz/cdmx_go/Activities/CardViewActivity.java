@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class CardViewActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageView imagen, mapa, marked;
-    private TextView nombre, descripcion, textoCalificacion;
+    private TextView nombre, descripcion, textoCalificacion, horario, fecha;
     private Negocio negocio;
     private HashMap<String, Integer> calificaciones;
     private DatabaseReference calificacionesEvento;
@@ -52,6 +52,8 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
         mapa = (ImageView) findViewById(R.id.cardview_como_llegar);
         marked = (ImageView) findViewById(R.id.cardview_marked);
         textoCalificacion = (TextView) findViewById(R.id.cardview_tv_texto_calificacion);
+        horario = (TextView) findViewById(R.id.cardview_tv_horario);
+        fecha = (TextView) findViewById(R.id.cardview_tv_fecha);
 
         estrella_1 = (ImageView) findViewById(R.id.estrella_uno);
         estrella_2 = (ImageView) findViewById(R.id.estrella_dos);
@@ -59,6 +61,11 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
         estrella_4 = (ImageView) findViewById(R.id.estrella_cuatro);
         estrella_5 = (ImageView) findViewById(R.id.estrella_cinco);
 
+
+        String cuando = "¿Cuándo?\n"+ negocio.getFecha();
+        String horarioString = "Horario: " + negocio.getHorario();
+        horario.setText(horarioString);
+        fecha.setText(cuando);
         nombre.setText(negocio.getNombre());
         descripcion.setText(negocio.getDescripcion());
         Glide.with(this)

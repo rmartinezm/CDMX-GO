@@ -8,14 +8,14 @@
     <string name="aceptar">Aceptar</string>
     <string name="olvide_pass">Olvidé mi contraseña</string>
     <string name="nombre_usuario">Nombre de Usuario</string>
-    <string name="password">Contraseña</string>
+    <string name="password">Contraseña (Al menos 6 caracteres)</string>
     <string name="correo">Correo Electrónico</string>
-    <string name="aceptar_notificaciones">¿Deceas recibir notificaciones sobre nuevos eventos?</string>
+    <string name="aceptar_notificaciones">¿Deseas recibir notificaciones a tu celular sobre nuevos eventos?</string>
     <string name="title_activity_principal">CDMX-GO</string>
     <string name="action_settings">Settings</string>
     <string name="iniciando_sesion">Iniciando Sesión...</string>
     <string name="creando_cuenta">Creando cuenta...</string>
-    <string name="repite_password">Repite la Contraseña</string>
+    <string name="repite_password">Confirmar la Contraseña</string>
     <string name="cerrar_sesion">Cerrar Sesión</string>
     <string name="mi_ubicacion">Mi Ubicación</string>
     <string name="nuevo_password">Nueva Contraseña</string>

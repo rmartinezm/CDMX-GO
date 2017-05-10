@@ -21,6 +21,7 @@
 
     <EditText
         android:id="@+id/user_name_et_user_name"
+        android:inputType="textPersonName"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="@string/crear_user_name"

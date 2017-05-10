@@ -73,15 +73,11 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
 
                             // Agregamos a la base de datos al usuario
                             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(USUARIOS);
-
-                            // Foto temporal
-                            String usuarioFoto = "https://avatars3.githubusercontent.com/u/1452563?v=3&s=400";
-
                             DatabaseReference currentUserDB = mDatabase.child(auth.getCurrentUser().getUid());
+
                             currentUserDB.child("userName").setValue("");
                             currentUserDB.child("email").setValue(user);
-                            currentUserDB.child("password").setValue(password);
-                            currentUserDB.child("photo").setValue(usuarioFoto);
+                            currentUserDB.child("photo").setValue("");
                             currentUserDB.child("coins").setValue(0);
                             currentUserDB.child("notificaciones").setValue(aSwitch.isChecked());
 

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,7 +37,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
@@ -191,6 +191,17 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         private static class AsyncTaskAuxiliar extends AsyncTask<Void, Integer, Boolean>{
 
+            /**
+            private ProgressDialog progressDialog;
+
+            @Override
+            protected void onPreExecute() {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Espera...");
+                progressDialog.show();
+            }
+             **/
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 DatabaseReference reference = database.getReference().child("eventos");
@@ -227,7 +238,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                 negocios.add(negocio);
 
-                                ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                if (listView.getAdapter() != null)
+                                    ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
 
                                 i++;
 
@@ -246,6 +258,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             protected void onPostExecute(Boolean aBoolean) {
                 adapter = new EventoAdapter(context, negocios);
                 listView.setAdapter(adapter);
+                //progressDialog.dismiss();
             }
         }
     }
@@ -258,20 +271,15 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         FirebaseDatabase database;
         DatabaseReference usersReference;
         DatabaseReference userReference;
-        StorageReference storage;
         Context context;
         private String usuarioUserName;
         private String usuarioEmail;
         private String usuarioFoto;
-        private String usuarioPassword;
-
-        private final int CAMERA_REQUEST_CODE = 0;
 
         public UserFragment() {
             usuarioUserName = "";
             usuarioEmail = "";
             usuarioFoto = "";
-            usuarioPassword = "";
             this.context = PrincipalActivity.getContext();
             auth = FirebaseAuth.getInstance();
             database = FirebaseDatabase.getInstance();
@@ -287,6 +295,14 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final TextView tvCorreo = (TextView) rootView.findViewById(R.id.fragment_user_tv_correo);
             final TextView tvUserName = (TextView) rootView.findViewById(R.id.fragment_user_tv_user_name);
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
+            final TextView tvCoins = (TextView) rootView.findViewById(R.id.fragment_user_tv_coins);
+            ivPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(context, "Pronto podrás subir tu foto de perfil!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Pronto podrás subir tu foto de perfil!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            });
             final Button cambiarPassword = (Button) rootView.findViewById(R.id.fragment_user_btn_cambiar_password);
 
             userReference.addValueEventListener(new ValueEventListener() {
@@ -297,10 +313,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     if (dataSnapshot.hasChild("email"))
                         usuarioEmail = dataSnapshot.child("email").getValue().toString();
                     if (dataSnapshot.hasChild("photo"))
-                        usuarioFoto = dataSnapshot.child("photo").getValue().toString();
-                    if (dataSnapshot.hasChild("password"))
-                        usuarioPassword = dataSnapshot.child("password").getValue().toString();
-
+                        usuarioFoto = dataSnapshot.child("photo").getValue().toString().trim();
+                    if (dataSnapshot.hasChild("coins")){
+                        String misMonedas = "Mis Monedas: " + dataSnapshot.child("coins").getValue().toString();
+                        tvCoins.setText(misMonedas);
+                    }
                     if (usuarioUserName.isEmpty())
                         return;
 

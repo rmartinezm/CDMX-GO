@@ -6,14 +6,16 @@ package com.programacion.robertomtz.cdmx_go.Classes;
 
 public class Recompensa {
 
+    private String id;
     private int coins;
     private String descripcion;
 
     public Recompensa() {}
 
-    public Recompensa(int coins, String descripcion) {
+    public Recompensa(int coins, String descripcion, String id) {
         this.coins = coins;
         this.descripcion = descripcion;
+        this.id = id;
     }
 
     public int getCoins() {
@@ -30,5 +32,13 @@ public class Recompensa {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

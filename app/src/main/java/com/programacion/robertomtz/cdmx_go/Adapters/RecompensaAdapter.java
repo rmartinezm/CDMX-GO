@@ -44,7 +44,7 @@ public class RecompensaAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        View v = null;
+        View v;
 
         Recompensa recompensa = recompensas.get(position);
 
