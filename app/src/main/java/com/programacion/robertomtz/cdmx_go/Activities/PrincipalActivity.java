@@ -3,6 +3,7 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
@@ -154,14 +156,30 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     }
 
     /** FRAGMENT DE LA PRIMERA PAGINA **/
-    public static class EventosFragment extends Fragment {
+    public static class EventosFragment extends Fragment implements View.OnClickListener {
 
-        public EventosFragment(){}
+        ImageView conciertos, cine, cultural, comida;
+        boolean flagConciertos, flagCine, flagCultural, flagComida;
+
+        public EventosFragment(){
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState){
             View rootView = inflater.inflate(R.layout.fragment_eventos, container, false);
+
+            conciertos = (ImageView) rootView.findViewById(R.id.filtro_concierto);
+            cine = (ImageView) rootView.findViewById(R.id.filtro_cine);
+            cultural = (ImageView) rootView.findViewById(R.id.filtro_museo);
+            comida = (ImageView) rootView.findViewById(R.id.filtro_restaurante);
+
+            flagComida = flagCine = flagConciertos = flagCultural = false;
+
+            conciertos.setOnClickListener(this);
+            cine.setOnClickListener(this);
+            cultural.setOnClickListener(this);
+            comida.setOnClickListener(this);
 
             return rootView;
         }
@@ -185,6 +203,522 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     startActivity(intent);
                 }
             });
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            DatabaseReference reference;
+
+            switch (view.getId()){
+
+                case R.id.filtro_restaurante:
+
+                    if (flagComida){
+                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        reference = database.getReference().child("eventos");
+                        i = 0;
+                        negocios = new LinkedList<>();
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                flag = true;
+                                while (flag) {
+                                    if (dataSnapshot.hasChild(i + "")) {
+
+                                        DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                        Negocio negocio = new Negocio();
+                                        negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                        negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                        negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                        negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                        negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                        negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                        if (miNegocio.hasChild("calificaciones")){
+                                            DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                            HashMap<String, Integer> hashMap = new HashMap<>();
+
+                                            for (DataSnapshot calificacion: calificaciones.getChildren())
+                                                hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                            negocio.setCalificaciones(hashMap);
+                                        }else
+                                            negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                        negocios.add(negocio);
+
+                                        if (listView.getAdapter() != null)
+                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                        i++;
+
+                                    } else
+                                        flag = false;
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
+                        adapter = new EventoAdapter(context, negocios);
+                        listView.setAdapter(adapter);
+                        comida.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+
+                        flagComida = false;
+                        flagConciertos = false;
+                        flagCine = false;
+                        flagCultural = false;
+
+
+                        return;
+                    }
+                    Toast.makeText(context, "Comida", Toast.LENGTH_SHORT).show();
+
+                    flagComida = true;
+                    flagConciertos = false;
+                    flagCine = false;
+                    flagCultural = false;
+
+                    conciertos.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cine.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    comida.setBackgroundColor(Color.parseColor("#0097A7"));
+                    cultural.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                    reference = database.getReference().child("eventos");
+                    i = 0;
+                    negocios = new LinkedList<>();
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            flag = true;
+                            while (flag) {
+                                if (dataSnapshot.hasChild(i + "")) {
+
+                                    DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                    Negocio negocio = new Negocio();
+                                    negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                    negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                    negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                    negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                    negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                    negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                    if (miNegocio.hasChild("calificaciones")){
+                                        DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                        HashMap<String, Integer> hashMap = new HashMap<>();
+                                        for (DataSnapshot calificacion: calificaciones.getChildren())
+                                            hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                        negocio.setCalificaciones(hashMap);
+                                    }else
+                                        negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                    if ("Comida".equals(miNegocio.child("categoria").getValue(String.class)))
+                                        negocios.add(negocio);
+
+                                    if (listView.getAdapter() != null)
+                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                    i++;
+
+                                } else
+                                    flag = false;
+                            }
+
+                            adapter = new EventoAdapter(context, negocios);
+                            listView.setAdapter(adapter);
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                    break;
+
+                case R.id.filtro_cine:
+
+                    if (flagCine){
+                        reference = database.getReference().child("eventos");
+                        i = 0;
+                        negocios = new LinkedList<>();
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                flag = true;
+                                while (flag) {
+                                    if (dataSnapshot.hasChild(i + "")) {
+
+                                        DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                        Negocio negocio = new Negocio();
+                                        negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                        negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                        negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                        negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                        negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                        negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                        if (miNegocio.hasChild("calificaciones")){
+                                            DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                            HashMap<String, Integer> hashMap = new HashMap<>();
+
+                                            for (DataSnapshot calificacion: calificaciones.getChildren())
+                                                hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                            negocio.setCalificaciones(hashMap);
+                                        }else
+                                            negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                        negocios.add(negocio);
+
+                                        if (listView.getAdapter() != null)
+                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                        i++;
+
+                                    } else
+                                        flag = false;
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
+                        adapter = new EventoAdapter(context, negocios);
+                        listView.setAdapter(adapter);
+                        cine.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                        flagComida = false;
+                        flagConciertos = false;
+                        flagCine = false;
+                        flagCultural = false;
+
+                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+
+                        return;
+                    }
+                    Toast.makeText(context, "Cine", Toast.LENGTH_SHORT).show();
+
+                    flagComida = false;
+                    flagConciertos = false;
+                    flagCine = true;
+                    flagCultural = false;
+
+                    reference = database.getReference().child("eventos");
+                    i = 0;
+                    negocios = new LinkedList<>();
+
+                    conciertos.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cine.setBackgroundColor(Color.parseColor("#0097A7"));
+                    comida.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cultural.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            flag = true;
+                            while (flag) {
+                                if (dataSnapshot.hasChild(i + "")) {
+
+                                    DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                    Negocio negocio = new Negocio();
+                                    negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                    negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                    negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                    negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                    negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                    negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                    if (miNegocio.hasChild("calificaciones")){
+                                        DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                        HashMap<String, Integer> hashMap = new HashMap<>();
+                                        for (DataSnapshot calificacion: calificaciones.getChildren())
+                                            hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                        negocio.setCalificaciones(hashMap);
+                                    }else
+                                        negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                    if ("Cine".equals(miNegocio.child("categoria").getValue(String.class)))
+                                        negocios.add(negocio);
+
+                                    if (listView.getAdapter() != null)
+                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                    i++;
+
+                                } else
+                                    flag = false;
+                            }
+
+                            adapter = new EventoAdapter(context, negocios);
+                            listView.setAdapter(adapter);
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                    break;
+
+                case R.id.filtro_museo:
+
+                    if (flagCultural){
+                        reference = database.getReference().child("eventos");
+                        i = 0;
+                        negocios = new LinkedList<>();
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                flag = true;
+                                while (flag) {
+                                    if (dataSnapshot.hasChild(i + "")) {
+
+                                        DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                        Negocio negocio = new Negocio();
+                                        negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                        negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                        negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                        negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                        negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                        negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                        if (miNegocio.hasChild("calificaciones")){
+                                            DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                            HashMap<String, Integer> hashMap = new HashMap<>();
+
+                                            for (DataSnapshot calificacion: calificaciones.getChildren())
+                                                hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                            negocio.setCalificaciones(hashMap);
+                                        }else
+                                            negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                        negocios.add(negocio);
+
+                                        if (listView.getAdapter() != null)
+                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                        i++;
+
+                                    } else
+                                        flag = false;
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
+                        adapter = new EventoAdapter(context, negocios);
+                        listView.setAdapter(adapter);
+                        cultural.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                        flagComida = false;
+                        flagConciertos = false;
+                        flagCine = false;
+                        flagCultural = false;
+
+                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Toast.makeText(context, "Cultural", Toast.LENGTH_SHORT).show();
+                    flagComida = false;
+                    flagConciertos = false;
+                    flagCine = false;
+                    flagCultural = true;
+
+                    reference = database.getReference().child("eventos");
+                    i = 0;
+                    negocios = new LinkedList<>();
+
+                    conciertos.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cine.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    comida.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cultural.setBackgroundColor(Color.parseColor("#0097A7"));
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            flag = true;
+                            while (flag) {
+                                if (dataSnapshot.hasChild(i + "")) {
+
+                                    DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                    Negocio negocio = new Negocio();
+                                    negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                    negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                    negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                    negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                    negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                    negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                    if (miNegocio.hasChild("calificaciones")){
+                                        DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                        HashMap<String, Integer> hashMap = new HashMap<>();
+                                        for (DataSnapshot calificacion: calificaciones.getChildren())
+                                            hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                        negocio.setCalificaciones(hashMap);
+                                    }else
+                                        negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                    if ("Cultura".equals(miNegocio.child("categoria").getValue(String.class)))
+                                        negocios.add(negocio);
+
+                                    if (listView.getAdapter() != null)
+                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                    i++;
+
+                                } else
+                                    flag = false;
+                            }
+
+                            adapter = new EventoAdapter(context, negocios);
+                            listView.setAdapter(adapter);
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                    break;
+
+                case R.id.filtro_concierto:
+
+                    if (flagConciertos){
+                        reference = database.getReference().child("eventos");
+                        i = 0;
+                        negocios = new LinkedList<>();
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                flag = true;
+                                while (flag) {
+                                    if (dataSnapshot.hasChild(i + "")) {
+
+                                        DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                        Negocio negocio = new Negocio();
+                                        negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                        negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                        negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                        negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                        negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                        negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                        if (miNegocio.hasChild("calificaciones")){
+                                            DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                            HashMap<String, Integer> hashMap = new HashMap<>();
+
+                                            for (DataSnapshot calificacion: calificaciones.getChildren())
+                                                hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                            negocio.setCalificaciones(hashMap);
+                                        }else
+                                            negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                        negocios.add(negocio);
+
+                                        if (listView.getAdapter() != null)
+                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                        i++;
+
+                                    } else
+                                        flag = false;
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
+                        adapter = new EventoAdapter(context, negocios);
+                        listView.setAdapter(adapter);
+                        conciertos.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                        flagComida = false;
+                        flagConciertos = false;
+                        flagCine = false;
+                        flagCultural = false;
+
+                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+
+                        return;
+                    }
+
+                    Toast.makeText(context, "Conciertos", Toast.LENGTH_SHORT).show();
+                    flagComida = false;
+                    flagConciertos = true;
+                    flagCine = false;
+                    flagCultural = false;
+
+                    conciertos.setBackgroundColor(Color.parseColor("#0097A7"));
+                    cine.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    comida.setBackgroundColor(Color.parseColor("#ffd1f1"));
+                    cultural.setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                    reference = database.getReference().child("eventos");
+                    i = 0;
+                    negocios = new LinkedList<>();
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            flag = true;
+                            while (flag) {
+                                if (dataSnapshot.hasChild(i + "")) {
+
+                                    DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                    Negocio negocio = new Negocio();
+                                    negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+                                    negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                    negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                    negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                    negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                    negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                    if (miNegocio.hasChild("calificaciones")){
+                                        DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                        HashMap<String, Integer> hashMap = new HashMap<>();
+                                        for (DataSnapshot calificacion: calificaciones.getChildren())
+                                            hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                        negocio.setCalificaciones(hashMap);
+                                    }else
+                                        negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                    if ("Concierto".equals(miNegocio.child("categoria").getValue(String.class)))
+                                        negocios.add(negocio);
+
+                                    if (listView.getAdapter() != null)
+                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                    i++;
+
+                                } else
+                                    flag = false;
+                            }
+
+                            adapter = new EventoAdapter(context, negocios);
+                            listView.setAdapter(adapter);
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                    break;
+
+                default:
+                    Toast.makeText(context, "Pronto será activada esta opción", Toast.LENGTH_SHORT).show();
+            }
 
         }
 
