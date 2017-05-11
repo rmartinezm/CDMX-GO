@@ -146,6 +146,9 @@ public class FragmentRecompensas extends Fragment {
                         }
 
                         if (dataSnapshot.child("categoria").getValue().toString().equals("establecimiento")){
+
+                            
+
                             final AlertDialog alertDialog = new AlertDialog.Builder(PrincipalActivity.context).create();
                             final EditText input = new EditText(PrincipalActivity.context);
                             input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);

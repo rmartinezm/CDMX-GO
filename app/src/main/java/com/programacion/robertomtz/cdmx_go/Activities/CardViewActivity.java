@@ -2,6 +2,7 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -54,6 +55,9 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
         textoCalificacion = (TextView) findViewById(R.id.cardview_tv_texto_calificacion);
         horario = (TextView) findViewById(R.id.cardview_tv_horario);
         fecha = (TextView) findViewById(R.id.cardview_tv_fecha);
+        TextView textoGuardarEvento = (TextView) findViewById(R.id.txt_1);
+        textoGuardarEvento.setOnClickListener(this);
+
 
         estrella_1 = (ImageView) findViewById(R.id.estrella_uno);
         estrella_2 = (ImageView) findViewById(R.id.estrella_dos);
@@ -151,21 +155,27 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
 
+        TextView textoGuardarEvento = (TextView) findViewById(R.id.cardview_tv_guarda_evento);
+
         if (view.getId() == R.id.cardview_marked){
             if (flag){
                 Glide.with(this)
                         .load(R.drawable.sin_marcador)
                         .into(marked);
                 flag = false;
+                textoGuardarEvento.setText("Guardar Evento");
+
             }else{
                 Glide.with(this)
                         .load(R.drawable.marcado)
                         .into(marked);
+                Snackbar.make(view, "Este evento se guardará para poder verlo sin conexión a internet en próximas actualizaciones", Snackbar.LENGTH_LONG).show();
                 flag = true;
+                textoGuardarEvento.setText("Quitar Evento");
             }
         }
 
-        if (view.getId() == R.id.cardview_como_llegar){
+        if (view.getId() == R.id.cardview_como_llegar || view.getId() == R.id.txt_1){
             Intent intent = new Intent(this, MapsActivity.class);
             intent.putExtra("negocio", negocio);
             startActivity(intent);
