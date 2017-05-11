@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
@@ -322,6 +321,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     if (usuarioEmail.isEmpty()){
                         etNuevoPassword.setVisibility(View.INVISIBLE);
                         etActualPassword.setVisibility(View.INVISIBLE);
+                        cambiarPassword.setVisibility(View.INVISIBLE);
                         return;
                     }
 
@@ -330,23 +330,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         public void onClick(View view) {
                             EditText passwordActual = (EditText) getActivity().findViewById(R.id.fragment_user_et_password_actual);
                             EditText passwordNuevo = (EditText) getActivity().findViewById(R.id.fragment_user_et_nuevo_password);
-                            String passActual = passwordActual.getText().toString();
-                            String passNuevo = passwordNuevo.getText().toString();
-                            if (passActual.isEmpty() || passNuevo.isEmpty()) {
-                                Toast.makeText(context, getResources().getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            if (passActual.length() < 6 || passNuevo.length() < 6){
-                                Toast.makeText(context, getResources().getString(R.string.error_password_longitud), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            if (!passActual.equals(dataSnapshot.child("password").getValue())){
-                                Toast.makeText(context, getResources().getString(R.string.error_password_actual_no_coinciden), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            DatabaseReference currentUserDB = usersReference.child(auth.getCurrentUser().getUid());
-                            currentUserDB.child("password").setValue(passNuevo);
-                            Toast.makeText(context, getResources().getString(R.string.exito_cambiar_password), Toast.LENGTH_SHORT).show();
+
+                            Snackbar.make(view, "Opción aún no disponible", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                             passwordActual.setText("");
                             passwordNuevo.setText("");
