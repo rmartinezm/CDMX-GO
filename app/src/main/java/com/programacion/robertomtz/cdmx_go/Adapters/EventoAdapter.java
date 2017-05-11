@@ -48,6 +48,7 @@ public class EventoAdapter extends BaseAdapter {
         View v = null;
 
         LayoutInflater inflater = LayoutInflater.from(context);
+
         v = inflater.inflate(R.layout.adapter_lv_eventos, null);
 
         Negocio negocio = negocios.get(position);

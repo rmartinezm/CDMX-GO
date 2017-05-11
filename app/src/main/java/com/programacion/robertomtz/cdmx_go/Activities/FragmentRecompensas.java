@@ -9,11 +9,13 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -61,13 +63,13 @@ public class FragmentRecompensas extends Fragment {
 
         listViewRecompensas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, final View view, final int position, long l) {
                 // Referencia a la recompensa clickeada
                 final DatabaseReference miRecompensa = recompensasReference.child(recompensasList.get(position).getId());
 
                 miRecompensa.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
 
                         monedasDadasPorMiRecompensa = dataSnapshot.child("coins").getValue(Integer.class);
 
@@ -97,6 +99,7 @@ public class FragmentRecompensas extends Fragment {
                                                         int misCoins = dataSnapshot.child("coins").getValue(Integer.class);
                                                         // Actualizamos las monedas del usuario
                                                         userReference.child("coins").setValue(misCoins + monedasDadasPorMiRecompensa);
+                                                        monedasDadasPorMiRecompensa = 0;
                                                     }
 
                                                     @Override
@@ -143,6 +146,81 @@ public class FragmentRecompensas extends Fragment {
                         }
 
                         if (dataSnapshot.child("categoria").getValue().toString().equals("establecimiento")){
+                            final AlertDialog alertDialog = new AlertDialog.Builder(PrincipalActivity.context).create();
+                            final EditText input = new EditText(PrincipalActivity.context);
+                            input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                            alertDialog.setTitle("Esta recompensa necesita una clave secreta!");
+                            alertDialog.setMessage("Solicita la clave al personal del local");
+                            alertDialog.setView(input);
+
+                            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Aceptar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            final DatabaseReference recompensaAReclamar = recompensasReference.child(recompensasList.get(position).getId());
+                                            recompensaAReclamar.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshotRecompensaAReclamar) {
+                                                    final String key = dataSnapshotRecompensaAReclamar.child("key").getValue().toString();
+                                                    final String keyProporcionadaPorUsuario = input.getText().toString().trim();
+
+                                                    DatabaseReference recompensasUsuario = userReference.child("recompensas");
+                                                    recompensasUsuario.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshotRecompensasUsuario) {
+
+                                                            if (dataSnapshotRecompensasUsuario.hasChild(recompensasList.get(position).getId())){
+                                                                Toast.makeText(PrincipalActivity.context, "La recompensa ya fue reclamada anteriormente", Toast.LENGTH_SHORT).show();
+                                                                return;
+                                                            }
+
+                                                            // La recompensa no ha sido reclamada
+                                                            if (key.equals(keyProporcionadaPorUsuario)){
+
+                                                                userReference.child("recompensas").child(recompensasList.get(position).getId()).setValue(true);
+                                                                Toast.makeText(PrincipalActivity.context, "Recompensa reclamada correctamente", Toast.LENGTH_SHORT).show();
+                                                                userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                        int misCoins = dataSnapshot.child("coins").getValue(Integer.class);
+                                                                        // Actualizamos las monedas del usuario
+                                                                        userReference.child("coins").setValue(misCoins + monedasDadasPorMiRecompensa);
+                                                                        monedasDadasPorMiRecompensa = 0;
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                    }
+                                                                });
+                                                                // Cambiamos el fondo del elemento seleccionado en el ListView
+                                                                listViewRecompensas.getChildAt(position).setBackgroundColor(Color.parseColor("#ffd1f1"));
+
+                                                            }else{
+                                                                Toast.makeText(PrincipalActivity.context, "Clave incorrecta, intente otra vez", Toast.LENGTH_SHORT).show();
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+                            alertDialog.show();
                             return;
                         }
                         // Falta evento
@@ -211,8 +289,6 @@ public class FragmentRecompensas extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-
-
             recompensaAdapter = new RecompensaAdapter(PrincipalActivity.context, recompensasList);
             listViewRecompensas.setAdapter(recompensaAdapter);
         }
