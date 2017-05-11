@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -86,8 +87,8 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
                 return;
 
             case R.id.inicia_sesion_tv_olvide_pass:
+                Snackbar.make(view, "Opción no disponible por el momento", Snackbar.LENGTH_SHORT).show();
                 break;
-
         }
     }
 
@@ -109,7 +110,6 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
     private void inicializaVariables() {
         // Views
         usuario = (EditText) findViewById(R.id.inicia_sesion_et_usuario);
-        usuario.requestFocus();
         password = (EditText) findViewById(R.id.inicia_sesion_et_password);
         aceptar = (Button) findViewById(R.id.inicia_sesion_btn_aceptar);
         aceptar.setOnClickListener(this);

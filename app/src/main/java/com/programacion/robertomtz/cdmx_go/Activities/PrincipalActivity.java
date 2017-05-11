@@ -191,17 +191,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         private static class AsyncTaskAuxiliar extends AsyncTask<Void, Integer, Boolean>{
 
-            /**
-            private ProgressDialog progressDialog;
-
-            @Override
-            protected void onPreExecute() {
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setMessage("Espera...");
-                progressDialog.show();
-            }
-             **/
-
             @Override
             protected Boolean doInBackground(Void... voids) {
                 DatabaseReference reference = database.getReference().child("eventos");
@@ -258,7 +247,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             protected void onPostExecute(Boolean aBoolean) {
                 adapter = new EventoAdapter(context, negocios);
                 listView.setAdapter(adapter);
-                //progressDialog.dismiss();
             }
         }
     }
@@ -296,11 +284,14 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final TextView tvUserName = (TextView) rootView.findViewById(R.id.fragment_user_tv_user_name);
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
             final TextView tvCoins = (TextView) rootView.findViewById(R.id.fragment_user_tv_coins);
+
+            final EditText etNuevoPassword = (EditText) rootView.findViewById(R.id.fragment_user_et_nuevo_password);
+            final EditText etActualPassword = (EditText) rootView.findViewById(R.id.fragment_user_et_password_actual);
+
             ivPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Toast.makeText(context, "Pronto podrás subir tu foto de perfil!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(view, "Pronto podrás subir tu foto de perfil!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Snackbar.make(view, "Pronto podrás actualizar tu foto de perfil!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
             final Button cambiarPassword = (Button) rootView.findViewById(R.id.fragment_user_btn_cambiar_password);
@@ -318,16 +309,21 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         String misMonedas = "Mis Monedas: " + dataSnapshot.child("coins").getValue().toString();
                         tvCoins.setText(misMonedas);
                     }
-                    if (usuarioUserName.isEmpty())
-                        return;
+
+                    tvUserName.setText(usuarioUserName);
 
                     tvCorreo.setText(usuarioEmail);
-                    tvUserName.setText(usuarioUserName);
                     if (!usuarioFoto.isEmpty())
                         Glide.with(context)
                                 .load(usuarioFoto)
                                 .crossFade()
                                 .into(ivPhoto);
+
+                    if (usuarioEmail.isEmpty()){
+                        etNuevoPassword.setVisibility(View.INVISIBLE);
+                        etActualPassword.setVisibility(View.INVISIBLE);
+                        return;
+                    }
 
                     cambiarPassword.setOnClickListener(new View.OnClickListener() {
                         @Override

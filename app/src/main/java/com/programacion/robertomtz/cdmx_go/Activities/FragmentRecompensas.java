@@ -161,20 +161,27 @@ public class FragmentRecompensas extends Fragment {
     private class AsyncTaskRecompensas extends AsyncTask<Void, Integer, Boolean>{
 
         private String keyMiRecompensa;
-        /**
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = new ProgressDialog(PrincipalActivity.context);
-            progressDialog.setMessage("Espera...");
-            progressDialog.show();
-        }
-         **/
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             recompensasList = new LinkedList<>();
+
+            final DatabaseReference yaReclamadasReference = userReference.child("recompensas");
+            final LinkedList<String> keysRecompensasYaReclamadas = new LinkedList<>();
+
+            yaReclamadasReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot equis: dataSnapshot.getChildren())
+                        keysRecompensasYaReclamadas.add(equis.getKey());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+            });
 
             recompensasReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -182,19 +189,21 @@ public class FragmentRecompensas extends Fragment {
                     // Rellenamos recompensasList con todas las recompensas que tiene el usuario
                     for (DataSnapshot miDataSnapshot : dataSnapshot.getChildren()) {
                         keyMiRecompensa = miDataSnapshot.getKey();
-                        recompensasList.add(new Recompensa(miDataSnapshot.child("coins").getValue(Integer.class),
+                        if (!keysRecompensasYaReclamadas.contains(keyMiRecompensa))
+                            recompensasList.add(new Recompensa(miDataSnapshot.child("coins").getValue(Integer.class),
                                 miDataSnapshot.child("descripcion").getValue(String.class), keyMiRecompensa));
                     }
                     // Notificamos para que se actualice el ListView
                     if (listViewRecompensas.getAdapter() != null)
                         ((BaseAdapter) listViewRecompensas.getAdapter()).notifyDataSetChanged();
-
                 }
 
+                @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-                 });
+
+            });
 
             return true;
 
@@ -203,12 +212,9 @@ public class FragmentRecompensas extends Fragment {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
 
-            /** COLOREAR EL LISTVIEW SI YA FUE RECLAMADA LA RECOMPENSA **/
-
 
             recompensaAdapter = new RecompensaAdapter(PrincipalActivity.context, recompensasList);
             listViewRecompensas.setAdapter(recompensaAdapter);
-            //progressDialog.dismiss();
         }
     }
 }
