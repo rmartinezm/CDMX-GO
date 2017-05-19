@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 public class EventoAdapter extends BaseAdapter {
 
-    private Context context;
+    private static Context context;
     private LinkedList<Negocio> negocios;
 
     public EventoAdapter(Context context, LinkedList<Negocio> negocios){
@@ -30,12 +30,12 @@ public class EventoAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return negocios.size();
+        return negocios.size()+1;
     }
 
     @Override
     public Object getItem(int i) {
-        return negocios.get(i);
+        return negocios.get(i+1);
     }
 
     @Override
@@ -44,27 +44,48 @@ public class EventoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        View v = null;
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        v = inflater.inflate(R.layout.adapter_lv_eventos, null);
+        // Para poner el layout del filtro en posicion cero
+        if (position == 0){
+            convertView = inflater.inflate(R.layout.adapter_filtro, null);
+            return convertView;
+        }
 
-        Negocio negocio = negocios.get(position);
+        // ViewHolder Pattern para no tener que cargar los items una vez que ya han sido cargados
+        ViewHolder holder;
+        Negocio negocio = negocios.get(position-1);
 
-        TextView nombre = (TextView) v.findViewById(R.id.eventos_tv_nombre_del_evento);
-        TextView descripcion = (TextView) v.findViewById(R.id.eventos_tv_descripcion);
-        ImageView iv = (ImageView) v.findViewById(R.id.eventos_iv_image);
+        if (convertView.getTag() == null){
 
-        nombre.setText(negocio.getNombre());
-        descripcion.setText(negocio.getDescripcion());
+            convertView = inflater.inflate(R.layout.adapter_lv_eventos, null);
 
-        Glide.with(context)
-                .load(negocio.getUrlImagen())
-                .crossFade()
-                .into(iv);
+            holder = new ViewHolder();
 
-        return v;
+            holder.nombre = (TextView) convertView.findViewById(R.id.eventos_tv_nombre_del_evento);
+            holder.descripcion = (TextView) convertView.findViewById(R.id.eventos_tv_descripcion);
+            holder.imagen = (ImageView) convertView.findViewById(R.id.eventos_iv_image);
+
+            Glide.with(context).load(negocio.getUrlImagen()).into(holder.imagen);
+
+            convertView.setTag(holder);
+
+        }else
+            holder = (ViewHolder) convertView.getTag();
+
+        // LLenamos los view con nuestros datos
+        holder.nombre.setText(negocio.getNombre());
+        holder.descripcion.setText(negocio.getDescripcion());
+
+        return convertView;
     }
+
+    private static class ViewHolder{
+        TextView nombre;
+        TextView descripcion;
+        ImageView imagen;
+    }
+
 }

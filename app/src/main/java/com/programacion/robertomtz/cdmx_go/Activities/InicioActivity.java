@@ -6,19 +6,17 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.programacion.robertomtz.cdmx_go.R;
 
 public class InicioActivity extends AppCompatActivity {
 
+    // Views
     private Button iniciarSesion;
     private Button crearCuenta;
     private Intent intent;
-    private ImageView logo;
 
     // Firebase Auth
     private FirebaseAuth auth;
@@ -31,6 +29,23 @@ public class InicioActivity extends AppCompatActivity {
 
         inicializaVariables();
         agregaListeners();
+    }
+
+    private void inicializaVariables(){
+        iniciarSesion = (Button) findViewById(R.id.inicio_btn_inicia_sesion);
+        crearCuenta = (Button) findViewById(R.id.inicio_btn_crear_cuenta);
+
+        auth = FirebaseAuth.getInstance();
+
+        listener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null)
+                    irPrincipalActivity();
+            }
+        };
+
     }
 
     private void agregaListeners() {
@@ -53,46 +68,27 @@ public class InicioActivity extends AppCompatActivity {
 
     }
 
-    private void inicializaVariables(){
-        iniciarSesion = (Button) findViewById(R.id.inicio_btn_inicia_sesion);
-        crearCuenta = (Button) findViewById(R.id.inicio_btn_crear_cuenta);
-        logo = (ImageView) findViewById(R.id.inicio_iv_logo);
-
-        Glide.with(this)
-                .load(R.drawable.logo)
-                .crossFade()
-                .into(logo);
-
-        auth = FirebaseAuth.getInstance();
-
-        listener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null)
-                    irPrincipalActivity();
-            }
-        };
-
-    }
-
+    // Metodo auxiliar para mandar intent con banderas
     private void irPrincipalActivity() {
         Intent intent = new Intent(this, PrincipalActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
+    // Hacemos que con el boton hacia atras se minimice la app
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
 
+    // Escuchamos para ver si ya tiene sesion inciada o no
     @Override
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(listener);
     }
 
+    // Quitamos el listener
     @Override
     protected void onStop() {
         super.onStop();

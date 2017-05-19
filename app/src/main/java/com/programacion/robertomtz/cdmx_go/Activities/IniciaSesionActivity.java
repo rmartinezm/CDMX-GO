@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,7 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
     private Button aceptar;
     private TextView olvidePass;
     private ProgressDialog progressDialog;
+    private View view;
     // FB Button
     private CallbackManager callbackManager;
     private LoginButton loginButtonFB;
@@ -56,9 +58,11 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicia_sesion);
 
+        // Editamos la action bar para poner un titulo
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Iniciar Sesión");
+
         inicializaVariables();
-
-
     }
 
     @Override
@@ -73,11 +77,11 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
                 String pass = password.getText().toString();
 
                 if (user.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(this, getResources().getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, R.string.error_campos_vacios, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 if (pass.length() < 6) {
-                    Toast.makeText(this, getResources().getString(R.string.error_password_longitud), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, R.string.error_password_longitud, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 progressDialog.setMessage(getResources().getString(R.string.iniciando_sesion));
@@ -92,7 +96,6 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    /** Suponemos que user y pass son ambos distintos tanto de null como de cadena vacia **/
     private void verificaCuenta(String user, String pass){
         auth.signInWithEmailAndPassword(user, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -102,7 +105,7 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
                         if (task.isSuccessful())
                             irPincipalActivity();
                         else
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_iniciar_sesion), Toast.LENGTH_SHORT);
+                            Snackbar.make(view, R.string.error_iniciar_sesion, Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -116,6 +119,7 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
         olvidePass = (TextView) findViewById(R.id.inicia_sesion_tv_olvide_pass);
         olvidePass.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
+        view = findViewById(R.id.activity_inicia_sesion);
         // Facebook login
         callbackManager = CallbackManager.Factory.create();
         loginButtonFB = (LoginButton) findViewById(R.id.inicia_sesion_btn_fb);
@@ -184,6 +188,7 @@ public class IniciaSesionActivity extends AppCompatActivity implements View.OnCl
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
+
                             });
                         }
 

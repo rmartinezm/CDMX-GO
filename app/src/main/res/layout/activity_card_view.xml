@@ -1,198 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:context="com.programacion.robertomtz.cdmx_go.Activities.CardViewActivity">
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <android.support.design.widget.AppBarLayout
+            <TextView
+                android:id="@+id/cardview_nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/AppTheme.AppBarOverlay">
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="15dp"
+                android:text="Nombre Evento"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:layout_gravity="center_horizontal"
+                android:textSize="22sp"
+                android:textStyle="bold|italic"/>
+        </android.support.v7.widget.Toolbar>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            app:cardCornerRadius="8dp"
+            app:cardElevation="5dp"
+            android:layout_margin="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="end|center">
 
                     <TextView
-                        android:id="@+id/cardview_nombre"
-                        android:layout_width="match_parent"
+                        android:text="Guardar Evento"
+                        android:textStyle="italic"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="Nombre Evento"
-                        android:gravity="center"
-                        android:textColor="#fff"
-                        android:layout_gravity="center_horizontal"
-                        android:textSize="22sp"
-                        android:textStyle="bold|italic"/>
-                </android.support.v7.widget.Toolbar>
+                        android:id="@+id/cardview_tv_guarda_evento" />
 
-            </android.support.design.widget.AppBarLayout>
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginRight="15dp"
+                        android:id="@+id/cardview_marked"
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:gravity="end|center">
+                </LinearLayout>
 
-                <TextView
-                    android:text="Guardar Evento"
-                    android:textStyle="italic"
+                <ImageView
+                    android:id="@+id/cardview_imagen"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <LinearLayout
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp"
+                    android:id="@+id/layout_estrellas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cardview_tv_guarda_evento" />
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_gravity="center_vertical"
+                    <TextView
+                        android:id="@+id/cardview_tv_texto_calificacion"
+                        android:text="Calificación Otorgada por usuarios"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/estrella_uno"
+                        android:background="@drawable/estrella_borde"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                    <ImageView
+                        android:id="@+id/estrella_dos"
+                        android:background="@drawable/estrella_borde"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                    <ImageView
+                        android:id="@+id/estrella_tres"
+                        android:background="@drawable/estrella_borde"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                    <ImageView
+                        android:id="@+id/estrella_cuatro"
+                        android:background="@drawable/estrella_borde"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                    <ImageView
+                        android:id="@+id/estrella_cinco"
+                        android:background="@drawable/estrella_borde"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/cardview_descripcion"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center"
+                    android:text="descipcion"
+                    android:layout_gravity="center_horizontal"/>
+
+                <TextView
+                    android:id="@+id/cardview_tv_fecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuando: Lunes a Viernes"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="25dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginRight="15dp"
-                    android:id="@+id/cardview_marked"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"/>
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/cardview_imagen"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_gravity="center_horizontal"/>
-
-            <LinearLayout
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="25dp"
-                android:id="@+id/layout_estrellas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
+                    android:textSize="20sp"
+                    android:textStyle="italic"/>
 
                 <TextView
-                    android:id="@+id/cardview_tv_texto_calificacion"
-                    android:text="Calificación Otorgada por usuarios"
-                    android:layout_width="150dp"
+                    android:id="@+id/cardview_tv_horario"
+                    android:text="Horario: 11:00hrs - 18:00hrs"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginRight="15dp"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textStyle="italic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"/>
+                    android:gravity="end|center"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/estrella_uno"
-                    android:background="@drawable/estrella_borde"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-                <ImageView
-                    android:id="@+id/estrella_dos"
-                    android:background="@drawable/estrella_borde"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-                <ImageView
-                    android:id="@+id/estrella_tres"
-                    android:background="@drawable/estrella_borde"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-                <ImageView
-                    android:id="@+id/estrella_cuatro"
-                    android:background="@drawable/estrella_borde"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-                <ImageView
-                    android:id="@+id/estrella_cinco"
-                    android:background="@drawable/estrella_borde"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
+                    <TextView
+                        android:id="@+id/txt_1"
+                        android:layout_width="100dp"
+                        android:gravity="end"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/donde_es"
+                        android:textSize="14sp"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginEnd="3dp"/>
 
+                    <ImageView
+                        android:id="@+id/cardview_como_llegar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/cardview_descripcion"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:gravity="center"
-                android:text="descipcion"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView
-                android:id="@+id/cardview_tv_fecha"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cuando: Lunes a Viernes"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:layout_marginTop="25dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:textSize="20sp"
-                android:textStyle="italic"/>
-
-            <TextView
-                android:id="@+id/cardview_tv_horario"
-                android:text="Horario: 11:00hrs - 18:00hrs"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:textStyle="italic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
-                android:layout_marginTop="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end|center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txt_1"
-                    android:layout_width="100dp"
-                    android:gravity="end"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:text="@string/donde_es"
-                    android:textSize="14sp"
-                    android:layout_marginRight="3dp" />
-
-                <ImageView
-                    android:id="@+id/cardview_como_llegar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"/>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
     </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

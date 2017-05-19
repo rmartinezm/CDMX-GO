@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_inicio"
     android:layout_width="match_parent"
@@ -12,25 +11,33 @@
     tools:context="com.programacion.robertomtz.cdmx_go.Activities.InicioActivity"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="280dp"
-        android:layout_height="320dp"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/inicio_iv_logo"
-        />
-
     <Button
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:text="@string/iniciar_sesion"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/inicio_btn_inicia_sesion"/>
-
-    <Button
-        android:layout_width="220dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/crear_cuenta"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/inicio_btn_crear_cuenta"/>
+        android:id="@+id/inicio_btn_crear_cuenta"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/inicio_btn_inicia_sesion"
+        android:layout_alignStart="@+id/inicio_btn_inicia_sesion" />
 
-</LinearLayout>
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/iniciar_sesion"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/inicio_btn_inicia_sesion"
+        android:layout_above="@+id/inicio_btn_crear_cuenta"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:src="@drawable/logo_fondo_blanco"
+        android:layout_width="270dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/inicio_iv_logo"
+        android:layout_marginTop="56dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

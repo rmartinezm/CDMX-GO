@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,18 +17,11 @@
         android:orientation="vertical"
         tools:context="com.programacion.robertomtz.cdmx_go.Activities.IniciaSesionActivity">
 
-        <TextView
+        <com.facebook.login.widget.LoginButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="24sp"
-            android:text="@string/iniciar_sesion"/>
-
-        <com.facebook.login.widget.LoginButton
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="@string/iniciar_sesion_con_fb"
+            facebook:com_facebook_login_text="@string/iniciar_sesion_con_fb"
             android:layout_gravity="center_horizontal"
             android:id="@+id/inicia_sesion_btn_fb"
             android:layout_marginTop="42dp" />
@@ -38,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/o"
+            android:textSize="20sp"
             android:layout_marginTop="33dp" />
 
         <EditText
@@ -48,7 +42,8 @@
             android:hint="@string/correo"
             android:inputType="textEmailAddress"
             android:nextFocusDown="@+id/inicia_sesion_et_password"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
+            android:textSize="14sp"
             android:layout_marginBottom="20dp" />
 
         <EditText
@@ -58,8 +53,9 @@
             android:layout_gravity="center_horizontal"
             android:hint="Contraseña"
             android:maxLines="1"
+            android:textSize="14sp"
             android:inputType="textPassword"
-            android:layout_marginBottom="59dp" />
+            android:layout_marginBottom="60dp" />
 
         <Button
             android:layout_width="220dp"
@@ -75,9 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="@string/olvide_pass"
-            android:id="@+id/inicia_sesion_tv_olvide_pass"
-            android:layout_marginBottom="26dp" />
-
+            android:id="@+id/inicia_sesion_tv_olvide_pass" />
 
     </LinearLayout>
 

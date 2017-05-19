@@ -15,18 +15,31 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="@string/crear"
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/user_name_et_user_name"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Dinos tu apodo o un sobrenombre con el que podamos identificarte"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="49dp"
+        android:id="@+id/textView" />
 
     <EditText
         android:id="@+id/user_name_et_user_name"
         android:inputType="textPersonName"
         android:layout_width="300dp"
+        android:gravity="center"
+        android:textSize="18sp"
         android:layout_height="wrap_content"
         android:hint="@string/crear_user_name"
-        android:layout_marginTop="147dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="101dp"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
 

@@ -18,13 +18,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.InicioActivity" />
         <activity android:name=".Activities.IniciaSesionActivity" />
         <activity android:name=".Activities.CreaCuentaActivity" />
@@ -58,6 +52,15 @@
             android:name=".Activities.CardViewActivity"
             android:label="@string/title_activity_card_view"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".Activities.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

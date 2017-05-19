@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,6 +30,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
     private Switch aSwitch;
     private Button btnAceptar;
     private ImageView ivImagen;
+    private View view;
     private ProgressDialog progressDialog;
     //Auxiliares
     private Intent intent;
@@ -39,6 +40,8 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crea_cuenta);
+
+        getSupportActionBar().setTitle("Crear Cuenta");
 
         inicializaVariables();
     }
@@ -53,10 +56,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
         btnAceptar = (Button) findViewById(R.id.crear_cuenta_btn_crear_cuenta);
         btnAceptar.setOnClickListener(this);
         ivImagen = (ImageView) findViewById(R.id.crear_cuenta_iv_image);
-
-        Glide.with(this)
-                .load(R.drawable.logo)
-                .into(ivImagen);
+        view = findViewById(R.id.activity_crea_cuenta);
     }
 
     private void crearCuenta(final String user, final String password){
@@ -85,7 +85,7 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
                             intent1.putExtra("id", auth.getCurrentUser().getUid());
                             startActivity(intent1);
                         }else
-                            Toast.makeText(CreaCuentaActivity.this, getResources().getString(R.string.error_crear_cuenta), Toast.LENGTH_SHORT).show();
+                            Snackbar.make(view, R.string.error_crear_cuenta, Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -101,16 +101,25 @@ public class CreaCuentaActivity extends AppCompatActivity implements View.OnClic
         switch (id){
             case R.id.crear_cuenta_btn_crear_cuenta:
 
+                // Verificamos los campos
                 if (user.isEmpty() || password.isEmpty() || repitePassword.isEmpty()) {
-                    Toast.makeText(this, getResources().getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, R.string.error_campos_vacios, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!user.contains("@") || !user.contains(".")){
+                    Snackbar.make(view, "Favor de ingresar un correo electrónico válido", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+                if (password.contains(" ")){
+                    Snackbar.make(view, "Su contraseña no puede tener espacios en blanco, verifique y vuelva a intentarlo", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 if (password.length() < 6){
-                    Toast.makeText(this, getResources().getString(R.string.error_password_longitud), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, R.string.error_password_longitud, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 if (!password.equals(repitePassword)){
-                    Toast.makeText(this, getResources().getString(R.string.error_passwords_no_coinciden), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, R.string.error_passwords_no_coinciden, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 

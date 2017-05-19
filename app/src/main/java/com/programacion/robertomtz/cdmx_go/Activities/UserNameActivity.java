@@ -2,11 +2,11 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,17 +48,16 @@ public class UserNameActivity extends AppCompatActivity implements View.OnClickL
         userName = etUserName.getText().toString().trim();
 
         if (userName.isEmpty()){
-            Toast.makeText(this, getResources().getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show();
+            Snackbar.make(view, "Indicanos un nombre de usuario", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
         DatabaseReference usuario = usersReference.child(id);
         usuario.child("userName").setValue(userName);
 
-        Toast.makeText(this, getResources().getString(R.string.exito_crear_cuenta), Toast.LENGTH_SHORT).show();
+        Snackbar.make(view, R.string.exito_crear_cuenta, Snackbar.LENGTH_SHORT).show();
 
         irPincipalActivity();
-
     }
 
     private void irPincipalActivity() {

@@ -15,10 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,9 +50,13 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private FloatingActionButton fab;
     // Auxiliares
     private Intent intent;
+    private View view;
     private boolean crearCuenta;
     private boolean recibirNotificaciones;
+
     public static ListView listView;
+    //public static RecyclerView recyclerView;
+
     private final String USUARIOS = "usuarios";
     private static boolean flag;
     public static LinkedList<Negocio> negocios;
@@ -75,9 +75,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         inicializaVariables();
     }
@@ -99,7 +96,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        view = findViewById(R.id.container);
+        mViewPager = (ViewPager) view;
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -108,36 +106,36 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Damos bienvenida al usuario
+                Snackbar snackbar = Snackbar.make(view, "¡Bienvenido a CDMX-GO " + dataSnapshot.child("userName").getValue(String.class) + "!", Snackbar.LENGTH_LONG);
+                snackbar.getView().setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                snackbar.show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public static Context getContext(){
         return context;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id){
-            case (R.id.action_settings):
-                FirebaseAuth.getInstance().signOut();
-                LoginManager.getInstance().logOut();
-
-                intent = new Intent(getApplicationContext(), InicioActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
+    /** CERRAR SESION
+      case (R.id.action_settings):
+      FirebaseAuth.getInstance().signOut();
+      LoginManager.getInstance().logOut();
+      intent = new Intent(getApplicationContext(), InicioActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
+      return true;
+      **/
 
     @Override
     public void onClick(View view) {
@@ -176,10 +174,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
             flagComida = flagCine = flagConciertos = flagCultural = false;
 
+            /**
             conciertos.setOnClickListener(this);
             cine.setOnClickListener(this);
             cultural.setOnClickListener(this);
             comida.setOnClickListener(this);
+            **/
 
             return rootView;
         }
@@ -196,8 +196,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                    if (position == 0){
+                        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Intent intent = new Intent(context, CardViewActivity.class);
-                    intent.putExtra("negocio", negocios.get(position));
+                    intent.putExtra("negocio", negocios.get(position-1));
                     String posicion = position+"";
                     intent.putExtra("identificadorEvento", posicion);
                     startActivity(intent);
@@ -884,6 +888,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /** EL FRAGMENT DE LA TERCERA PAGINA ESTA EN FRAGMENTRECOMPENSAS **/
+
     /** ADAPTADOR DE FRAGMENTS **/
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -901,7 +907,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 case 2:
                     return new FragmentRecompensas();
                 default:
-                    return new UserFragment();
+                    return null;
             }
         }
 

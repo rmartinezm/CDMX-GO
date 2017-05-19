@@ -1,86 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <TextView
-            android:text="Filtrar Eventos por..."
-            android:gravity="center"
-            android:background="#ffd1f1"
-            android:textSize="17sp"
-            android:textStyle="italic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+     <ListView
+         android:background="#ffd1f1"
+         android:id="@+id/fragment_eventos_lista"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent" />
 
-            <RelativeLayout
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:background="#ffd1f1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/claqueta"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:id="@+id/filtro_cine"
-                    android:layout_alignTop="@+id/filtro_restaurante"
-                    android:layout_toRightOf="@+id/filtro_restaurante"
-                    android:layout_toEndOf="@+id/filtro_restaurante" />
-
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:id="@+id/filtro_restaurante"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/restaurante"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_alignTop="@+id/filtro_concierto"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"/>
-
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/concierto"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:id="@+id/filtro_concierto"
-                    android:layout_alignTop="@+id/filtro_museo"
-                    android:layout_toRightOf="@+id/filtro_cine"
-                    android:layout_toEndOf="@+id/filtro_cine" />
-
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:id="@+id/filtro_museo"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/museo"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/filtro_concierto"
-                    android:layout_toEndOf="@+id/filtro_concierto" />
-            </RelativeLayout>
-
-            <ListView
-                android:id="@+id/fragment_eventos_lista"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+</LinearLayout>
