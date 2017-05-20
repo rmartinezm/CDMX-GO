@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-     <ListView
+     <android.support.v7.widget.RecyclerView
          android:background="#ffd1f1"
          android:id="@+id/fragment_eventos_lista"
          android:layout_width="match_parent"

@@ -6,7 +6,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.programacion.robertomtz.cdmx_go.Adapters.EventosAdapterRecycler;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
 
@@ -200,7 +200,7 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 1);
                 negocio.setCalificaciones(hashMap);
                 PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
-                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
+                ((EventosAdapterRecycler) PrincipalActivity.recyclerView.getAdapter()).updateList(PrincipalActivity.negocios);
                 break;
             case R.id.estrella_dos:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -213,7 +213,7 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 2);
                 negocio.setCalificaciones(hashMap);
                 PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
-                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
+                ((EventosAdapterRecycler) PrincipalActivity.recyclerView.getAdapter()).updateList(PrincipalActivity.negocios);
                 break;
             case R.id.estrella_tres:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -226,7 +226,7 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 3);
                 negocio.setCalificaciones(hashMap);
                 PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
-                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
+                ((EventosAdapterRecycler) PrincipalActivity.recyclerView.getAdapter()).updateList(PrincipalActivity.negocios);
                 break;
             case R.id.estrella_cuatro:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -239,7 +239,7 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 4);
                 negocio.setCalificaciones(hashMap);
                 PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
-                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
+                ((EventosAdapterRecycler) PrincipalActivity.recyclerView.getAdapter()).updateList(PrincipalActivity.negocios);
                 break;
             case R.id.estrella_cinco:
                 Glide.with(this).load(R.drawable.mi_estrella).into(estrella_1);
@@ -252,7 +252,7 @@ public class CardViewActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put(FirebaseAuth.getInstance().getCurrentUser().getUid(), 5);
                 negocio.setCalificaciones(hashMap);
                 PrincipalActivity.negocios.set(Integer.parseInt(identificadorEvento), negocio);
-                ((BaseAdapter) PrincipalActivity.listView.getAdapter()).notifyDataSetChanged();
+                ((EventosAdapterRecycler) PrincipalActivity.recyclerView.getAdapter()).updateList(PrincipalActivity.negocios);
                 break;
             default:
                 return;

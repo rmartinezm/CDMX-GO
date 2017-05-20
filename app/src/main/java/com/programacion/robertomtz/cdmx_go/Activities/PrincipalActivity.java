@@ -15,10 +15,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
+import com.programacion.robertomtz.cdmx_go.Adapters.EventosAdapterRecycler;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
 
@@ -47,7 +49,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     // Views
     public static ViewPager mViewPager;
-    private FloatingActionButton fab;
+    private static FloatingActionButton fab;
+    private static FloatingActionButton fabScroll;
     // Auxiliares
     private Intent intent;
     private View view;
@@ -55,13 +58,14 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private boolean recibirNotificaciones;
 
     public static ListView listView;
-    //public static RecyclerView recyclerView;
+    public static EventoAdapter adapter;
+    public static RecyclerView recyclerView;
+    public static EventosAdapterRecycler recyclerAdapter;
 
     private final String USUARIOS = "usuarios";
     private static boolean flag;
     public static LinkedList<Negocio> negocios;
     private static int i;
-    public static EventoAdapter adapter;
 
     private String usuarioID;
     public static Context context;
@@ -106,6 +110,9 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        fabScroll = (FloatingActionButton) findViewById(R.id.fab_scroll_up);
+        fabScroll.setOnClickListener(this);
+
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -147,8 +154,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 intent = new Intent(PrincipalActivity.this, MapsActivity.class);
                 startActivity(intent);
                 break;
-            default:
-                return;
+            case R.id.fab_scroll_up:
+                 if (recyclerView != null && recyclerView.getLayoutManager() != null) {
+                     LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                     layoutManager.scrollToPositionWithOffset(0, 0);
+                     break;
+                 }
         }
 
     }
@@ -188,23 +199,38 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
 
-            listView = (ListView) getActivity().findViewById(R.id.fragment_eventos_lista);
+            recyclerView = (RecyclerView) getActivity().findViewById(R.id.fragment_eventos_lista);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(layoutManager);
 
             AsyncTaskAuxiliar ata = new AsyncTaskAuxiliar();
             ata.execute();
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    if (position == 0){
-                        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Intent intent = new Intent(context, CardViewActivity.class);
-                    intent.putExtra("negocio", negocios.get(position-1));
-                    String posicion = position+"";
-                    intent.putExtra("identificadorEvento", posicion);
-                    startActivity(intent);
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+
+                    LinearLayoutManager lm= (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                    if(lm.findFirstVisibleItemPosition()==0)
+                        fabScroll.setVisibility(View.INVISIBLE);
+                    else
+                        fabScroll.setVisibility(View.VISIBLE);
+
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    LinearLayoutManager lm= (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                    if(lm.findFirstVisibleItemPosition()==0)
+                        fabScroll.setVisibility(View.INVISIBLE);
+                    else
+                        fabScroll.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -764,8 +790,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                 negocios.add(negocio);
 
-                                if (listView.getAdapter() != null)
-                                    ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                if (recyclerView.getAdapter() != null)
+                                    ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                 i++;
 
@@ -782,8 +808,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-                adapter = new EventoAdapter(context, negocios);
-                listView.setAdapter(adapter);
+                recyclerAdapter = new EventosAdapterRecycler(negocios);
+                recyclerView.setAdapter(recyclerAdapter);
             }
         }
     }
