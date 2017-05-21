@@ -8,13 +8,15 @@
     tools:showIn="@layout/activity_principal">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_scroll_up"
+        android:id="@+id/fab_cerrar_sesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="3dp"
         android:layout_marginEnd="3dp"
-        android:layout_marginTop="73dp"
+        android:layout_marginTop="3dp"
         android:layout_gravity="end|top"
-        app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@drawable/up" />
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:backgroundTint="#ec3838"
+        app:srcCompat="@drawable/cerrar_sesion" />
 </LinearLayout>

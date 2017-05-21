@@ -32,6 +32,7 @@ public class EventosAdapterRecycler extends RecyclerView.Adapter<EventosAdapterR
         // Tomamos la referencia a todos nuestros Views del adaptador
         public ViewHolder(View itemView) {
             super(itemView);
+
             titulo = (TextView) itemView.findViewById(R.id.eventos_tv_nombre_del_evento);
             descripcion = (TextView) itemView.findViewById(R.id.eventos_tv_descripcion);
             imagen = (ImageView) itemView.findViewById(R.id.eventos_iv_image);
@@ -62,9 +63,7 @@ public class EventosAdapterRecycler extends RecyclerView.Adapter<EventosAdapterR
     @Override
     public EventosAdapterRecycler.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
         View v = inflater.inflate(R.layout.adapter_lv_eventos, parent, false);
-
         return new ViewHolder(v);
     }
 

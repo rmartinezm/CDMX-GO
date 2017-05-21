@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_principal"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -24,6 +25,10 @@
             android:id="@+id/include_fab"
             layout="@layout/fab_scroll" />
 
+        <include
+            android:id="@+id/include_fab_perfil"
+            layout="@layout/fab_logout" />
+
     </RelativeLayout>
 
     <android.support.design.widget.AppBarLayout
@@ -31,10 +36,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top"
+        android:gravity="center"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
+            app:tabBackground="@drawable/tab_color_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

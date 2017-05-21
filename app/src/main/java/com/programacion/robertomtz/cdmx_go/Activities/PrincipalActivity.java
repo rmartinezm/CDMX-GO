@@ -2,6 +2,7 @@ package com.programacion.robertomtz.cdmx_go.Activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -14,28 +15,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.programacion.robertomtz.cdmx_go.Adapters.EventoAdapter;
 import com.programacion.robertomtz.cdmx_go.Adapters.EventosAdapterRecycler;
 import com.programacion.robertomtz.cdmx_go.Classes.Negocio;
 import com.programacion.robertomtz.cdmx_go.R;
@@ -51,6 +51,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     public static ViewPager mViewPager;
     private static FloatingActionButton fab;
     private static FloatingActionButton fabScroll;
+    private static FloatingActionButton fabLogout;
+
     // Auxiliares
     private Intent intent;
     private View view;
@@ -58,7 +60,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private boolean recibirNotificaciones;
 
     public static ListView listView;
-    public static EventoAdapter adapter;
+    public static EventosAdapterRecycler adapter;
     public static RecyclerView recyclerView;
     public static EventosAdapterRecycler recyclerAdapter;
 
@@ -106,12 +108,48 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
         fabScroll = (FloatingActionButton) findViewById(R.id.fab_scroll_up);
+        fabScroll.setVisibility(View.INVISIBLE);
         fabScroll.setOnClickListener(this);
+
+        fabLogout = (FloatingActionButton) findViewById(R.id.fab_cerrar_sesion);
+        fabLogout.setVisibility(View.INVISIBLE);
+        fabLogout.setOnClickListener(this);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0:
+                        fabScroll.setVisibility(View.INVISIBLE);
+                        fabLogout.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        fabScroll.setVisibility(View.INVISIBLE);
+                        fabLogout.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        fabScroll.setVisibility(View.INVISIBLE);
+                        fabLogout.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+
+        });
 
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -135,19 +173,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     }
 
     /** CERRAR SESION
-      case (R.id.action_settings):
-      FirebaseAuth.getInstance().signOut();
-      LoginManager.getInstance().logOut();
-      intent = new Intent(getApplicationContext(), InicioActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(intent);
-      return true;
       **/
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        final Intent intent;
 
         switch (id){
             case R.id.fab:
@@ -158,8 +188,28 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                  if (recyclerView != null && recyclerView.getLayoutManager() != null) {
                      LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                      layoutManager.scrollToPositionWithOffset(0, 0);
-                     break;
                  }
+                break;
+
+            case R.id.fab_cerrar_sesion:
+                new AlertDialog.Builder(this).setTitle("Cerrar Sesión").setMessage("¿Deseas cerrar sesión?")
+                        .setPositiveButton("Cerrar sesión", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                FirebaseAuth.getInstance().signOut();
+                                LoginManager.getInstance().logOut();
+                                intent = new Intent(getApplicationContext(), InicioActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No cerrar sesión", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // pass
+                            }
+                        }).show();
+                break;
         }
 
     }
@@ -167,7 +217,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     /** FRAGMENT DE LA PRIMERA PAGINA **/
     public static class EventosFragment extends Fragment implements View.OnClickListener {
 
-        ImageView conciertos, cine, cultural, comida;
+        ImageView conciertos, cine, cultural, comida, ivBuscar;
+        EditText etBuscar;
         boolean flagConciertos, flagCine, flagCultural, flagComida;
 
         public EventosFragment(){
@@ -182,15 +233,18 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             cine = (ImageView) rootView.findViewById(R.id.filtro_cine);
             cultural = (ImageView) rootView.findViewById(R.id.filtro_museo);
             comida = (ImageView) rootView.findViewById(R.id.filtro_restaurante);
+            ivBuscar = (ImageView) rootView.findViewById(R.id.filtro_iv_buscar);
+            etBuscar = (EditText) rootView.findViewById(R.id.filtro_et_buscar);
+            etBuscar.clearFocus();
+
+            ivBuscar.setOnClickListener(this);
 
             flagComida = flagCine = flagConciertos = flagCultural = false;
 
-            /**
             conciertos.setOnClickListener(this);
             cine.setOnClickListener(this);
             cultural.setOnClickListener(this);
             comida.setOnClickListener(this);
-            **/
 
             return rootView;
         }
@@ -224,20 +278,13 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-
-                    LinearLayoutManager lm= (LinearLayoutManager) recyclerView.getLayoutManager();
-
-                    if(lm.findFirstVisibleItemPosition()==0)
-                        fabScroll.setVisibility(View.INVISIBLE);
-                    else
-                        fabScroll.setVisibility(View.VISIBLE);
                 }
             });
 
         }
 
         @Override
-        public void onClick(View view) {
+        public void onClick(final View view) {
             DatabaseReference reference;
 
             switch (view.getId()){
@@ -245,7 +292,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 case R.id.filtro_restaurante:
 
                     if (flagComida){
-                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
                         reference = database.getReference().child("eventos");
                         i = 0;
                         negocios = new LinkedList<>();
@@ -280,8 +327,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                         negocios.add(negocio);
 
-                                        if (listView.getAdapter() != null)
-                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                        if (recyclerView.getAdapter() != null)
+                                            ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                         i++;
 
@@ -292,10 +339,9 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                             @Override
                             public void onCancelled(DatabaseError databaseError) {}
                         });
-                        adapter = new EventoAdapter(context, negocios);
-                        listView.setAdapter(adapter);
+                        adapter = new EventosAdapterRecycler(negocios);
+                        recyclerView.setAdapter(adapter);
                         comida.setBackgroundColor(Color.parseColor("#ffd1f1"));
-
 
                         flagComida = false;
                         flagConciertos = false;
@@ -305,7 +351,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                         return;
                     }
-                    Toast.makeText(context, "Comida", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Comida", Snackbar.LENGTH_SHORT).show();
 
                     flagComida = true;
                     flagConciertos = false;
@@ -351,8 +397,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     if ("Comida".equals(miNegocio.child("categoria").getValue(String.class)))
                                         negocios.add(negocio);
 
-                                    if (listView.getAdapter() != null)
-                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                    if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                     i++;
 
@@ -360,8 +406,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     flag = false;
                             }
 
-                            adapter = new EventoAdapter(context, negocios);
-                            listView.setAdapter(adapter);
+                            adapter = new EventosAdapterRecycler(negocios);
+                            recyclerView.setAdapter(adapter);
 
                         }
                         @Override
@@ -406,8 +452,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                         negocios.add(negocio);
 
-                                        if (listView.getAdapter() != null)
-                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                        if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                         i++;
 
@@ -418,8 +464,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                             @Override
                             public void onCancelled(DatabaseError databaseError) {}
                         });
-                        adapter = new EventoAdapter(context, negocios);
-                        listView.setAdapter(adapter);
+                        adapter = new EventosAdapterRecycler(negocios);
+                        recyclerView.setAdapter(adapter);
                         cine.setBackgroundColor(Color.parseColor("#ffd1f1"));
 
                         flagComida = false;
@@ -427,11 +473,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
 
                         return;
                     }
-                    Toast.makeText(context, "Cine", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Cine", Snackbar.LENGTH_SHORT).show();
 
                     flagComida = false;
                     flagConciertos = false;
@@ -477,8 +523,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     if ("Cine".equals(miNegocio.child("categoria").getValue(String.class)))
                                         negocios.add(negocio);
 
-                                    if (listView.getAdapter() != null)
-                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                    if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                     i++;
 
@@ -486,8 +532,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     flag = false;
                             }
 
-                            adapter = new EventoAdapter(context, negocios);
-                            listView.setAdapter(adapter);
+                            adapter = new EventosAdapterRecycler(negocios);
+                            recyclerView.setAdapter(adapter);
 
                         }
                         @Override
@@ -532,8 +578,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                         negocios.add(negocio);
 
-                                        if (listView.getAdapter() != null)
-                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                        if (recyclerView.getAdapter() != null)
+                                            ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                         i++;
 
@@ -544,8 +590,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                             @Override
                             public void onCancelled(DatabaseError databaseError) {}
                         });
-                        adapter = new EventoAdapter(context, negocios);
-                        listView.setAdapter(adapter);
+                        adapter = new EventosAdapterRecycler(negocios);
+                        recyclerView.setAdapter(adapter);
                         cultural.setBackgroundColor(Color.parseColor("#ffd1f1"));
 
                         flagComida = false;
@@ -553,11 +599,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
-                    Toast.makeText(context, "Cultural", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Cultural", Snackbar.LENGTH_SHORT).show();
                     flagComida = false;
                     flagConciertos = false;
                     flagCine = false;
@@ -602,8 +648,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     if ("Cultura".equals(miNegocio.child("categoria").getValue(String.class)))
                                         negocios.add(negocio);
 
-                                    if (listView.getAdapter() != null)
-                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                    if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                     i++;
 
@@ -611,8 +657,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     flag = false;
                             }
 
-                            adapter = new EventoAdapter(context, negocios);
-                            listView.setAdapter(adapter);
+                            adapter = new EventosAdapterRecycler(negocios);
+                            recyclerView.setAdapter(adapter);
 
                         }
                         @Override
@@ -657,8 +703,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                                         negocios.add(negocio);
 
-                                        if (listView.getAdapter() != null)
-                                            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                        if (recyclerView.getAdapter() != null)
+                                            ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
 
                                         i++;
 
@@ -669,8 +715,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                             @Override
                             public void onCancelled(DatabaseError databaseError) {}
                         });
-                        adapter = new EventoAdapter(context, negocios);
-                        listView.setAdapter(adapter);
+                        adapter = new EventosAdapterRecycler(negocios);
+                        recyclerView.setAdapter(adapter);
                         conciertos.setBackgroundColor(Color.parseColor("#ffd1f1"));
 
                         flagComida = false;
@@ -678,12 +724,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Toast.makeText(context, "Todos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
 
                         return;
                     }
 
-                    Toast.makeText(context, "Conciertos", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Conciertos", Snackbar.LENGTH_SHORT).show();
                     flagComida = false;
                     flagConciertos = true;
                     flagCine = false;
@@ -728,17 +774,16 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                     if ("Concierto".equals(miNegocio.child("categoria").getValue(String.class)))
                                         negocios.add(negocio);
 
-                                    if (listView.getAdapter() != null)
-                                        ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
-
+                                    if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
                                     i++;
 
                                 } else
                                     flag = false;
                             }
 
-                            adapter = new EventoAdapter(context, negocios);
-                            listView.setAdapter(adapter);
+                            adapter = new EventosAdapterRecycler(negocios);
+                            recyclerView.setAdapter(adapter);
 
                         }
                         @Override
@@ -746,8 +791,123 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     });
                     break;
 
+                case R.id.filtro_iv_buscar:
+                    final String textoABuscar = etBuscar.getText().toString().trim().toLowerCase();
+
+                    reference = FirebaseDatabase.getInstance().getReference().child("eventos");
+                    negocios = new LinkedList<>();
+                    i = 0;
+
+                    if (textoABuscar.isEmpty()){
+                        // Ponemos todos los eventos
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                flag = true;
+                                while (flag) {
+                                    if (dataSnapshot.hasChild(i + "")) {
+
+                                        DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                        Negocio negocio = new Negocio();
+                                        negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+
+                                        negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                        negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                        negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                        negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                        negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                        if (miNegocio.hasChild("calificaciones")){
+                                            DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                            HashMap<String, Integer> hashMap = new HashMap<>();
+                                            for (DataSnapshot calificacion: calificaciones.getChildren())
+                                                hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                            negocio.setCalificaciones(hashMap);
+                                        }else
+                                            negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                        negocios.add(negocio);
+
+                                        if (recyclerView.getAdapter() != null)
+                                            ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
+                                        i++;
+
+                                    } else
+                                        flag = false;
+                                }
+
+                                adapter = new EventosAdapterRecycler(negocios);
+                                recyclerView.setAdapter(adapter);
+
+                                Snackbar.make(view, "Todos los eventos", Snackbar.LENGTH_SHORT).show();
+                                etBuscar.setText("");
+                            }
+
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
+                        return;
+                    }
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            flag = true;
+                            while (flag) {
+                                if (dataSnapshot.hasChild(i + "")) {
+
+                                    DataSnapshot miNegocio = dataSnapshot.child(i+"");
+
+                                    Negocio negocio = new Negocio();
+                                    negocio.setNombre(miNegocio.child("nombre_evento").getValue().toString());
+
+                                    negocio.setUrlImagen(miNegocio.child("urlImagen").getValue().toString());
+                                    negocio.setFecha(miNegocio.child("fecha").getValue().toString());
+                                    negocio.setHorario(miNegocio.child("horario").getValue().toString());
+                                    negocio.setLugar(miNegocio.child("lugar").getValue().toString());
+                                    negocio.setDescripcion(miNegocio.child("descripcion").getValue().toString());
+
+                                    if (miNegocio.hasChild("calificaciones")){
+                                        DataSnapshot calificaciones = miNegocio.child("calificaciones");
+                                        HashMap<String, Integer> hashMap = new HashMap<>();
+                                        for (DataSnapshot calificacion: calificaciones.getChildren())
+                                            hashMap.put(calificacion.getKey(), Integer.parseInt(calificacion.getValue().toString()));
+
+                                        negocio.setCalificaciones(hashMap);
+                                    }else
+                                        negocio.setCalificaciones(new HashMap<String, Integer>());
+
+                                    if (negocio.getNombre().trim().toLowerCase().contains(textoABuscar))
+                                        negocios.add(negocio);
+
+                                    if (recyclerView.getAdapter() != null)
+                                        ((EventosAdapterRecycler) recyclerView.getAdapter()).updateList(negocios);
+                                    i++;
+
+                                } else
+                                    flag = false;
+                            }
+
+                            adapter = new EventosAdapterRecycler(negocios);
+                            recyclerView.setAdapter(adapter);
+
+                            Snackbar.make(view, "Número de eventos que coinciden con la búsqueda: " + negocios.size(), Snackbar.LENGTH_SHORT).show();
+                            etBuscar.setText("");
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+
+                    break;
+
                 default:
-                    Toast.makeText(context, "Pronto será activada esta opción", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(view, "Pronto será activada esta opción", Snackbar.LENGTH_SHORT).show();
             }
 
         }
@@ -950,7 +1110,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                 case 1:
                     return "PERFIL!";
                 case 2:
-                    return "BONUS!";
+                    return "Premios!";
             }
             return null;
         }
