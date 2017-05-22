@@ -22,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -52,10 +53,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private static FloatingActionButton fab;
     private static FloatingActionButton fabScroll;
     private static FloatingActionButton fabLogout;
+    private static FloatingActionButton fabRecompensas;
+    private static View currentFocus;
 
     // Auxiliares
     private Intent intent;
-    private View view;
+    private static View viewActivity;
     private boolean crearCuenta;
     private boolean recibirNotificaciones;
 
@@ -93,6 +96,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
     private void inicializaVariables() {
         context = this;
         miActivity = this;
+        currentFocus = getCurrentFocus();
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -102,8 +106,8 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        view = findViewById(R.id.container);
-        mViewPager = (ViewPager) view;
+        viewActivity = findViewById(R.id.container);
+        mViewPager = (ViewPager) viewActivity;
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -121,6 +125,10 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         fabLogout.setVisibility(View.INVISIBLE);
         fabLogout.setOnClickListener(this);
 
+        fabRecompensas = (FloatingActionButton) findViewById(R.id.fab_rewards);
+        fabRecompensas.setVisibility(View.INVISIBLE);
+        fabRecompensas.setOnClickListener(this);
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -130,16 +138,22 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
+                        fab.setVisibility(View.VISIBLE);
                         fabScroll.setVisibility(View.INVISIBLE);
                         fabLogout.setVisibility(View.INVISIBLE);
+                        fabRecompensas.setVisibility(View.INVISIBLE);
                         break;
                     case 1:
+                        fab.setVisibility(View.INVISIBLE);
                         fabScroll.setVisibility(View.INVISIBLE);
                         fabLogout.setVisibility(View.VISIBLE);
+                        fabRecompensas.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
+                        fab.setVisibility(View.INVISIBLE);
                         fabScroll.setVisibility(View.INVISIBLE);
                         fabLogout.setVisibility(View.INVISIBLE);
+                        fabRecompensas.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -155,7 +169,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Damos bienvenida al usuario
-                Snackbar snackbar = Snackbar.make(view, "¡Bienvenido a CDMX-GO " + dataSnapshot.child("userName").getValue(String.class) + "!", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(viewActivity, "¡Bienvenido a CDMX-GO " + dataSnapshot.child("userName").getValue(String.class) + "!", Snackbar.LENGTH_LONG);
                 snackbar.getView().setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 snackbar.show();
             }
@@ -172,9 +186,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
         return context;
     }
 
-    /** CERRAR SESION
-      **/
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -188,6 +199,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                  if (recyclerView != null && recyclerView.getLayoutManager() != null) {
                      LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                      layoutManager.scrollToPositionWithOffset(0, 0);
+                     fabScroll.setVisibility(View.INVISIBLE);
                  }
                 break;
 
@@ -291,8 +303,10 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                 case R.id.filtro_restaurante:
 
+                    fabScroll.setVisibility(View.INVISIBLE);
+
                     if (flagComida){
-                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(viewActivity, "Todos", Snackbar.LENGTH_SHORT).show();
                         reference = database.getReference().child("eventos");
                         i = 0;
                         negocios = new LinkedList<>();
@@ -351,7 +365,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
                         return;
                     }
-                    Snackbar.make(view, "Comida", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewActivity, "Comida", Snackbar.LENGTH_SHORT).show();
 
                     flagComida = true;
                     flagConciertos = false;
@@ -416,6 +430,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     break;
 
                 case R.id.filtro_cine:
+                    fabScroll.setVisibility(View.INVISIBLE);
 
                     if (flagCine){
                         reference = database.getReference().child("eventos");
@@ -473,11 +488,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(viewActivity, "Todos", Snackbar.LENGTH_SHORT).show();
 
                         return;
                     }
-                    Snackbar.make(view, "Cine", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewActivity, "Cine", Snackbar.LENGTH_SHORT).show();
 
                     flagComida = false;
                     flagConciertos = false;
@@ -542,6 +557,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     break;
 
                 case R.id.filtro_museo:
+                    fabScroll.setVisibility(View.INVISIBLE);
 
                     if (flagCultural){
                         reference = database.getReference().child("eventos");
@@ -599,11 +615,11 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(viewActivity, "Todos", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
-                    Snackbar.make(view, "Cultural", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewActivity, "Cultural", Snackbar.LENGTH_SHORT).show();
                     flagComida = false;
                     flagConciertos = false;
                     flagCine = false;
@@ -667,6 +683,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     break;
 
                 case R.id.filtro_concierto:
+                    fabScroll.setVisibility(View.INVISIBLE);
 
                     if (flagConciertos){
                         reference = database.getReference().child("eventos");
@@ -724,12 +741,12 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         flagCine = false;
                         flagCultural = false;
 
-                        Snackbar.make(view, "Todos", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(viewActivity, "Todos", Snackbar.LENGTH_SHORT).show();
 
                         return;
                     }
 
-                    Snackbar.make(view, "Conciertos", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewActivity, "Conciertos", Snackbar.LENGTH_SHORT).show();
                     flagComida = false;
                     flagConciertos = true;
                     flagCine = false;
@@ -792,14 +809,21 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     break;
 
                 case R.id.filtro_iv_buscar:
+                    // Tomamos el texto del edit text y lo pasamos a minusculas
                     final String textoABuscar = etBuscar.getText().toString().trim().toLowerCase();
+
+                    fabScroll.setVisibility(View.INVISIBLE);
+
+                    // Ocultamos el teclado de la pantalla
+                    InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(etBuscar.getWindowToken(), 0);
 
                     reference = FirebaseDatabase.getInstance().getReference().child("eventos");
                     negocios = new LinkedList<>();
                     i = 0;
 
                     if (textoABuscar.isEmpty()){
-                        // Ponemos todos los eventos
+                        // Si en edittext no tiene texto entonces ponemos todos los eventos
 
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -842,11 +866,9 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                                 adapter = new EventosAdapterRecycler(negocios);
                                 recyclerView.setAdapter(adapter);
 
-                                Snackbar.make(view, "Todos los eventos", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(viewActivity, "Todos los eventos", Snackbar.LENGTH_SHORT).show();
                                 etBuscar.setText("");
                             }
-
-
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {}
@@ -896,7 +918,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                             adapter = new EventosAdapterRecycler(negocios);
                             recyclerView.setAdapter(adapter);
 
-                            Snackbar.make(view, "Número de eventos que coinciden con la búsqueda: " + negocios.size(), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(viewActivity, "Número de eventos que coinciden con la búsqueda: " + negocios.size(), Snackbar.LENGTH_SHORT).show();
                             etBuscar.setText("");
                         }
 
@@ -907,7 +929,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     break;
 
                 default:
-                    Snackbar.make(view, "Pronto será activada esta opción", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewActivity, "Pronto será activada esta opción", Snackbar.LENGTH_SHORT).show();
             }
 
         }
@@ -1006,7 +1028,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
             final TextView tvCorreo = (TextView) rootView.findViewById(R.id.fragment_user_tv_correo);
             final TextView tvUserName = (TextView) rootView.findViewById(R.id.fragment_user_tv_user_name);
             final ImageView ivPhoto = (ImageView) rootView.findViewById(R.id.fragment_user_iv_image);
-            final TextView tvCoins = (TextView) rootView.findViewById(R.id.fragment_user_tv_coins);
 
             final EditText etNuevoPassword = (EditText) rootView.findViewById(R.id.fragment_user_et_nuevo_password);
             final EditText etActualPassword = (EditText) rootView.findViewById(R.id.fragment_user_et_password_actual);
@@ -1028,10 +1049,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                         usuarioEmail = dataSnapshot.child("email").getValue().toString();
                     if (dataSnapshot.hasChild("photo"))
                         usuarioFoto = dataSnapshot.child("photo").getValue().toString().trim();
-                    if (dataSnapshot.hasChild("coins")){
-                        String misMonedas = "Mis Monedas: " + dataSnapshot.child("coins").getValue().toString();
-                        tvCoins.setText(misMonedas);
-                    }
 
                     tvUserName.setText(usuarioUserName);
 
@@ -1039,7 +1056,6 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
                     if (!usuarioFoto.isEmpty())
                         Glide.with(context)
                                 .load(usuarioFoto)
-                                .crossFade()
                                 .into(ivPhoto);
 
                     if (usuarioEmail.isEmpty()){

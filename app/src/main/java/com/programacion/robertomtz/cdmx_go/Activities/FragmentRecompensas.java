@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ public class FragmentRecompensas extends Fragment {
     private RecompensaAdapter recompensaAdapter;
     private DatabaseReference recompensasReference;
     private DatabaseReference userReference;
+    private TextView tvCoins;
     int monedasDadasPorMiRecompensa;
 
     public FragmentRecompensas(){}
@@ -49,6 +51,25 @@ public class FragmentRecompensas extends Fragment {
         userReference = FirebaseDatabase.getInstance().getReference().child("usuarios").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         View rootView = inflater.inflate(R.layout.activity_fragment_recompensas, container, false);
+
+        tvCoins = (TextView) rootView.findViewById(R.id.fragment_recompensas_tv_coins);
+
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("coins")) {
+                    String misMonedas = "Mis Monedas: " + dataSnapshot.child("coins").getValue().toString();
+                    tvCoins.setText(misMonedas);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
         return rootView;
     }
 

@@ -29,6 +29,10 @@
             android:id="@+id/include_fab_perfil"
             layout="@layout/fab_logout" />
 
+        <include
+            android:id="@+id/include_fab_recompensas"
+            layout="@layout/fab_recompensas" />
+
     </RelativeLayout>
 
     <android.support.design.widget.AppBarLayout

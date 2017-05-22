@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#ffd1f1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="5dp"
+        app:cardCornerRadius="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="#ffeb86"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/coins"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
+
+            <TextView
+                android:id="@+id/fragment_recompensas_tv_coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Mis monedas: 100"
+                android:textSize="25sp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <ListView
+        android:padding="8dp"
+        android:background="#ffd1f1"
         android:id="@+id/fragment_recompensas_lista"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -16,7 +16,6 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:padding="3dp"
                 android:orientation="horizontal"
                 android:background="#ffd1f1"
                 android:layout_width="wrap_content"
@@ -45,47 +44,110 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginEnd="20dp"/>
 
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginStart="5dp"
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp"
                     android:layout_marginLeft="5dp"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/claqueta"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:id="@+id/filtro_cine" />
+                    android:layout_marginStart="5dp">
 
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:id="@+id/filtro_restaurante"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/restaurante"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"/>
+                    <ImageView
+                        android:background="#ffd1f1"
+                        android:src="@drawable/claqueta"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/filtro_cine" />
 
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/concierto"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:id="@+id/filtro_concierto"/>
+                    <TextView
+                        android:text="CINE"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:padding="5dp"
-                    android:layout_marginStart="5dp"
+                </android.support.design.widget.CoordinatorLayout>
+
+                <android.support.design.widget.CoordinatorLayout
                     android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp">
+
+                    <ImageView
+                        android:background="#ffd1f1"
+                        android:src="@drawable/restaurante"
+                        android:layout_width="70dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="3dp"
+                        android:id="@+id/filtro_restaurante" />
+
+                    <TextView
+                        android:text="COMIDA"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.CoordinatorLayout>
+
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:id="@+id/filtro_museo"
-                    android:background="#ffd1f1"
-                    android:src="@drawable/museo"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp">
+
+                    <ImageView
+                        android:background="#ffd1f1"
+                        android:src="@drawable/concierto"
+                        android:layout_marginTop="3dp"
+                        android:layout_width="70dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="70dp"
+                        android:id="@+id/filtro_concierto"/>
+
+                    <TextView
+                        android:text="CONCIERTO"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.CoordinatorLayout>
+
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="90dp">
+
+                    <ImageView
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/filtro_museo"
+                        android:background="#ffd1f1"
+                        android:src="@drawable/museo"
+                        android:layout_marginTop="3dp"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
+
+                    <TextView
+                        android:text="CULTURA"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.CoordinatorLayout>
+
             </LinearLayout>
 
         </HorizontalScrollView>

@@ -9,12 +9,12 @@
     tools:showIn="@layout/activity_principal">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_cerrar_sesion"
+        android:id="@+id/fab_rewards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="bottom|end"
-        app:backgroundTint="#ec3838"
-        app:srcCompat="@drawable/logout" />
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/reward_icon" />
 
 </android.support.design.widget.CoordinatorLayout>
