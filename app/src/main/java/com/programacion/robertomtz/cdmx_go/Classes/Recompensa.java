@@ -9,6 +9,7 @@ public class Recompensa {
     private String id;
     private int coins;
     private String descripcion;
+    private String key;
 
     public Recompensa() {}
 
@@ -40,5 +41,17 @@ public class Recompensa {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public boolean hasKey() {
+        return key != null;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

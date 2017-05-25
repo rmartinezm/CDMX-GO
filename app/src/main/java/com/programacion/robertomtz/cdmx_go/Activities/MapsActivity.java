@@ -1,5 +1,6 @@
 package com.programacion.robertomtz.cdmx_go.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -8,7 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -63,21 +64,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_market)));
             mMap.animateCamera(miUbicacion);
 
-        }else {
-
-            Toast.makeText(this, "Pronto podrás ver tu ubicación y los eventos cercanos a ti!", Toast.LENGTH_SHORT).show();
-
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                return;
-            }
-
-            mMap.setMyLocationEnabled(true);
-
+        }else
             miUbicacion();
-        }
+
     }
 
     private void agregaMarcador(double lat, double lon) {
@@ -92,42 +81,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(miUbicacion);
     }
 
-    private void actualizaUbicacion(Location location) {
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            actualizarUbicacion(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    private void miUbicacion() {
+            int permissionCheck = ContextCompat.checkSelfPermission(MapsActivity.this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION);
+
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                actualizarUbicacion(location);
+                //actualizamos la ubicacion cad 15 segundos
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 0, locationListener);
+
+            }else{
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },
+                        1000);
+            }
+
+        }
+
+    private void actualizarUbicacion(Location location) {
         if (location != null) {
             latitud = location.getLatitude();
             longitud = location.getLongitude();
             agregaMarcador(latitud, longitud);
         }
-    }
-
-    LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            actualizaUbicacion(location);
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-        @Override
-        public void onProviderEnabled(String s) {}
-
-        @Override
-        public void onProviderDisabled(String s) {}
-    };
-
-    private void miUbicacion() {
-        // Permisos
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        actualizaUbicacion(location);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
     }
 
 

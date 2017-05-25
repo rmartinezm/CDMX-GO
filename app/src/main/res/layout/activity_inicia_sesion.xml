@@ -34,29 +34,36 @@
             android:textSize="20sp"
             android:layout_marginTop="33dp" />
 
-        <EditText
-            android:id="@+id/inicia_sesion_et_usuario"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:hint="@string/correo"
-            android:inputType="textEmailAddress"
-            android:nextFocusDown="@+id/inicia_sesion_et_password"
             android:layout_marginTop="25dp"
-            android:textSize="14sp"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp" >
 
-        <EditText
-            android:id="@+id/inicia_sesion_et_password"
-            android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/inicia_sesion_et_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/correo"
+                android:inputType="textEmailAddress"
+                android:textSize="14sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:hint="Contraseña"
-            android:maxLines="1"
-            android:textSize="14sp"
-            android:inputType="textPassword"
-            android:layout_marginBottom="60dp" />
+            android:layout_marginBottom="60dp" >
 
+            <EditText
+                android:id="@+id/inicia_sesion_et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contraseña"
+                android:textSize="14sp"
+                android:inputType="textPassword" />
+
+        </android.support.design.widget.TextInputLayout>
         <Button
             android:layout_width="220dp"
             android:layout_height="wrap_content"

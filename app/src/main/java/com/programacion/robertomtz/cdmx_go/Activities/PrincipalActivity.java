@@ -58,7 +58,7 @@ public class PrincipalActivity extends AppCompatActivity implements View.OnClick
 
     // Auxiliares
     private Intent intent;
-    private static View viewActivity;
+    public static View viewActivity;
     private boolean crearCuenta;
     private boolean recibirNotificaciones;
 
